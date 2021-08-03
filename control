@@ -1,0 +1,9 @@
+Package: com.jschiefner.dimmer
+Name: Dimmer
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Tweak to dim the screen even further with the brightness slider in Control Center
+Maintainer: Jonas Schiefner
+Author: Jonas Schiefner
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
