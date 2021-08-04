@@ -5,7 +5,7 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Dimmer
-Dimmer_FRAMEWORKS = MediaAccessibility Preferences
+Dimmer_FRAMEWORKS = UIKit QuartzCore MediaAccessibility Preferences
 Dimmer_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
 
 Dimmer_FILES = $(wildcard *.x)

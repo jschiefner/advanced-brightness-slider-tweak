@@ -9,14 +9,12 @@
 -(void) setBrightnessLevel:(float) arg1;
 @end
 
-@interface CCUIContinuousSliderView : UIControl {
-	CCUICAPackageDescription* _glyphPackageDescription;
-	UIPanGestureRecognizer* _valueChangeGestureRecognizer;
-}
+@interface CCUIContinuousSliderView : UIControl
 -(CCUICAPackageDescription *)glyphPackageDescription;
 -(void)_handleValueChangeGestureRecognizer:(id)arg1;
 -(BOOL)isGlyphVisible;
 -(CGSize)size;
+-(void)drawDashedLine;
 -(void)setValue:(float)arg1;
 -(BOOL) isBrightnessSlider;
 -(float) inSmallMode;
@@ -43,9 +41,12 @@ float clampZeroOne(float value) {
 
 -(id)initWithFrame:(CGRect)arg1 {
 	id orig = %orig;
-	brightness = [%c(SBDisplayBrightnessController) new];
-	currentSliderLevel = [[%c(UIDevice) currentDevice] _backlightLevel];
-	oldSliderLevel = currentSliderLevel;
+	if ([orig isBrightnessSlider]) {
+		brightness = [%c(SBDisplayBrightnessController) new];
+		currentSliderLevel = [[%c(UIDevice) currentDevice] _backlightLevel];
+		oldSliderLevel = currentSliderLevel;
+		[orig drawDashedLine];
+	}
 	return orig;
 }
 
@@ -55,8 +56,38 @@ float clampZeroOne(float value) {
 }
 
 %new
--(float) inSmallMode {
+-(float)inSmallMode {
 	return [self isGlyphVisible];
+}
+
+%new
+-(void)drawDashedLine {
+	CAShapeLayer * shapelayer = [%c(CAShapeLayer) new];
+	UIBezierPath *path = [%c(UIBezierPath) bezierPath];
+	//draw a line
+	int y = 80;
+	[path moveToPoint:CGPointMake(0,y)]; //add yourStartPoint here
+	[path addLineToPoint:CGPointMake(69,y)];// add yourEndPoint here
+	[path stroke];
+
+	CGFloat dashPattern[] = {2.0f,6.0f,4.0f,2.0f}; //make your pattern here
+	[path setLineDash:dashPattern count:4 phase:3];
+
+	shapelayer.strokeStart = 0.0;
+	shapelayer.strokeColor = [UIColor colorWithWhite: 0 alpha: 0.3f].CGColor;
+	shapelayer.lineWidth = 1.0;
+	shapelayer.lineJoin = kCALineJoinMiter;
+	shapelayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:10],[NSNumber numberWithInt:7], nil];
+	shapelayer.lineDashPhase = 3.0f;
+	shapelayer.path = path.CGPath;
+
+	[self.layer addSublayer:shapelayer];
+}
+
+-(BOOL)isGlyphVisible {
+	%log;
+	NSLog(@"%@", NSStringFromCGRect([self frame]));
+	return %orig;
 }
 
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
