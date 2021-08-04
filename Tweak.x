@@ -50,10 +50,8 @@ float clampZeroOne(float value) {
 }
 
 %new
--(BOOL) isBrightnessSlider {
-	// TODO: implement less complex (save slider type in boolean property if possible, string comparison is expensive)
-	NSString * glyphpackage = [[[self glyphPackageDescription] packageURL] absoluteString];
-	return [glyphpackage rangeOfString:@"Brightness"].location != NSNotFound;
+-(BOOL)isBrightnessSlider {
+	return ![self isKindOfClass: [%c(MediaControlsVolumeSliderView) class]];
 }
 
 %new
