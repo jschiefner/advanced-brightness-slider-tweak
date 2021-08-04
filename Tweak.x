@@ -16,7 +16,7 @@
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 ;
 -(CGSize)size;
 -(BOOL) isBrightnessSlider;
--(float) scrollMultiplier;
+-(float) inSmallMode;
 @end
 
 SBDisplayBrightnessController * brightness;
@@ -41,12 +41,8 @@ float oldLevel;
 }
 
 %new
--(float) scrollMultiplier {
-	if ([self size].height > 200) {
-		return 300.0f;
-	} else {
-		return 140.0f;
-	}
+-(float) inSmallMode {
+	return [self size].height <= 200;
 }
 
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
@@ -54,17 +50,14 @@ float oldLevel;
 
 	UIPanGestureRecognizer * recognizer = (UIPanGestureRecognizer *) arg1;
 	CGPoint translation = [recognizer translationInView: self];
-	float ytranslation = (float) translation.y / [self scrollMultiplier];
+	float ytranslation = (float) translation.y / ([self inSmallMode] ? 160.0f : 350.0f);
 
-	if (ytranslation == 0.0f) { // TODO: when in big mode, this does not start at 0
+	if ([recognizer state] == UIGestureRecognizerStateBegan) {
 		currentLevel = [[%c(UIDevice) currentDevice] _backlightLevel];
 		oldLevel = currentLevel;
 	}
 
-	NSLog(@"ytranslation is %f", ytranslation);
-
 	currentLevel = oldLevel - ytranslation;
-	NSLog(@"setting to %f", currentLevel);
 	[brightness setBrightnessLevel: currentLevel];
 }
 
