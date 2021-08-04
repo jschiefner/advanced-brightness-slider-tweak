@@ -13,7 +13,8 @@
 	UIPanGestureRecognizer* _valueChangeGestureRecognizer;
 }
 -(CCUICAPackageDescription *)glyphPackageDescription;
--(void)_handleValueChangeGestureRecognizer:(id)arg1 ;
+-(void)_handleValueChangeGestureRecognizer:(id)arg1;
+-(BOOL)isGlyphVisible;
 -(CGSize)size;
 -(BOOL) isBrightnessSlider;
 -(float) inSmallMode;
@@ -42,7 +43,7 @@ float oldLevel;
 
 %new
 -(float) inSmallMode {
-	return [self size].height <= 200;
+	return [self isGlyphVisible];
 }
 
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
