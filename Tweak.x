@@ -22,6 +22,12 @@
 -(float) inSmallMode;
 @end
 
+@interface AXSettings
++(id)sharedInstance;
+-(BOOL)reduceWhitePointEnabled;
+-(void)setReduceWhitePointEnabled:(BOOL)arg1;
+@end
+
 SBDisplayBrightnessController * brightness;
 float currentSliderLevel; // TODO: update this when system brightness changes from elsewhere (with listener)
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
@@ -67,16 +73,19 @@ float clampZeroOne(float value) {
 	}
 
 	currentSliderLevel = clampZeroOne(oldSliderLevel - ytranslation);
+	AXSettings * axSettings = [%c(AXSettings) sharedInstance];
 	if (currentSliderLevel >= threshold) {
 		float distance = 1 - threshold; // 0.7
 		float upperSectionSliderLevel = currentSliderLevel - threshold; // in 0.7..0
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // in 1..0
+		if ([axSettings reduceWhitePointEnabled]) [axSettings setReduceWhitePointEnabled: NO];
 		[brightness setBrightnessLevel: newBrightnessLevel];
 	} else {
 		float distance = threshold; // 0.3
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0..3
 		float newWhitePointLevel = lowerSectionSliderLevel / distance; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
+		if (![axSettings reduceWhitePointEnabled]) [axSettings setReduceWhitePointEnabled: YES];
 		MADisplayFilterPrefSetReduceWhitePointIntensity(newAdjustedWhitePointLevel);
 		[self setValue: -newAdjustedWhitePointLevel];
 	}
