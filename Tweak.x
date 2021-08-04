@@ -24,6 +24,12 @@ SBDisplayBrightnessController * brightness;
 float currentLevel;
 float oldLevel;
 
+float clampZeroOne(float value) {
+	if (value > 1) return 1;
+	else if (value < 0) return 0;
+	else return value;
+}
+
 %hook CCUIContinuousSliderView
 
 -(id)initWithFrame:(CGRect)arg1 {
@@ -59,6 +65,7 @@ float oldLevel;
 	}
 
 	currentLevel = oldLevel - ytranslation;
+	currentLevel = clampZeroOne(currentLevel);
 	[brightness setBrightnessLevel: currentLevel];
 }
 
