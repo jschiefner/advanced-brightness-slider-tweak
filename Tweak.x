@@ -32,7 +32,10 @@
 @end
 
 SBDisplayBrightnessController * brightness;
-float currentSliderLevel; // TODO: keep track in NSDefaults or whatever to persist after respring
+// TODO: keep track in NSDefaults or whatever to persist after respring
+// TODO: observe external brightness changes and adjust this variable accordingly (if issues with jumping value keeps happening)
+float currentSliderLevel;
+
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float threshold = 0.3; // value where slider switches from brightness to
 Boolean autoBrightnessEnabled = true;
@@ -113,14 +116,14 @@ void setAutoBrightnessEnabled(Boolean enabled) {
 		// brightness
 		if (currentSliderLevel < threshold) return;
 		float distance = 1 - threshold; // 0.7
-		float currentSliderLevel = arg1 * distance + threshold; // 1..0.3
+		currentSliderLevel = arg1 * distance + threshold; // 1..0.3
 		%orig(currentSliderLevel);
 	} else {
 		// arg1 -0.25..-1
 		float distance = threshold; // 0.3
 		float whitePointLevel = -arg1; // 1..0.25
 		float levelBetween0and1 = (whitePointLevel - 0.25f) / 0.75f; // 0..1
-		float currentSliderLevel = distance - (levelBetween0and1 * distance); // 0.3..0
+		currentSliderLevel = distance - (levelBetween0and1 * distance); // 0.3..0
 		%orig(currentSliderLevel);
 	}
 }
