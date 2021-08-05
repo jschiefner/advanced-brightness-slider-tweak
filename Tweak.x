@@ -1,6 +1,9 @@
 #import <ControlCenterUIKit/CCUICAPackageDescription.h>
 #import "ReduceWhitePointLevel.h"
 
+#define kABSBackboard CFSTR("com.apple.backboardd")
+#define kABSAutoBrightnessKey CFSTR("BKEnableALS")
+
 @interface UIDevice (Category)
 @property float _backlightLevel;
 @end
@@ -32,11 +35,21 @@ SBDisplayBrightnessController * brightness;
 float currentSliderLevel; // TODO: keep track in NSDefaults or whatever to persist after respring
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float threshold = 0.3; // value where slider switches from brightness to
+Boolean autoBrightnessEnabled = true;
 
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
 	else if (value < 0) return 0.0f;
 	else return value;
+}
+
+void setAutoBrightnessEnabled(Boolean enabled) {
+	if (enabled && autoBrightnessEnabled) return;
+	if (!enabled && !autoBrightnessEnabled) return;
+
+	CFPreferencesSetAppValue(kABSAutoBrightnessKey, enabled ? kCFBooleanTrue : kCFBooleanFalse, kABSBackboard);
+	CFPreferencesAppSynchronize(kABSBackboard);
+	autoBrightnessEnabled = enabled;
 }
 
 %hook CCUIContinuousSliderView
@@ -79,6 +92,7 @@ float clampZeroOne(float value) {
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // in 1..0
 		if ([axSettings reduceWhitePointEnabled]) [axSettings setReduceWhitePointEnabled: NO];
 		[brightness setBrightnessLevel: newBrightnessLevel];
+		setAutoBrightnessEnabled(true);
 	} else {
 		float distance = threshold; // 0.3
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0..3
@@ -87,6 +101,7 @@ float clampZeroOne(float value) {
 		if (![axSettings reduceWhitePointEnabled]) [axSettings setReduceWhitePointEnabled: YES];
 		MADisplayFilterPrefSetReduceWhitePointIntensity(newAdjustedWhitePointLevel);
 		[self setValue: -newAdjustedWhitePointLevel];
+		setAutoBrightnessEnabled(false);
 	}
 }
 
