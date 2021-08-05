@@ -29,7 +29,7 @@
 @end
 
 SBDisplayBrightnessController * brightness;
-float currentSliderLevel; // TODO: update this when system brightness changes from elsewhere (with listener)
+float currentSliderLevel; // TODO: keep track in NSDefaults or whatever to persist after respring
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float threshold = 0.3; // value where slider switches from brightness to
 
@@ -44,7 +44,7 @@ float clampZeroOne(float value) {
 -(id)initWithFrame:(CGRect)arg1 {
 	id orig = %orig;
 	brightness = [%c(SBDisplayBrightnessController) new];
-	currentSliderLevel = [[%c(UIDevice) currentDevice] _backlightLevel];
+	currentSliderLevel = [[%c(UIDevice) currentDevice] _backlightLevel] * (1-threshold) + threshold;
 	oldSliderLevel = currentSliderLevel;
 	return orig;
 }
@@ -59,6 +59,7 @@ float clampZeroOne(float value) {
 	return [self isGlyphVisible];
 }
 
+// example values and ranges assuming threshold == 0.3
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
 	if (![self isBrightnessSlider]) return %orig;
 
@@ -89,21 +90,23 @@ float clampZeroOne(float value) {
 	}
 }
 
+// example values and ranges assuming threshold == 0.3
 -(void) setValue:(float)arg1 {
 	if(![self isBrightnessSlider]) return %orig;
 
 	if (arg1 >= 0) {
 		// brightness
+		if (currentSliderLevel < threshold) return;
 		float distance = 1 - threshold; // 0.7
-		float newSliderLevel = arg1 * distance + threshold; // 1..0.3
-		%orig(newSliderLevel);
+		float currentSliderLevel = arg1 * distance + threshold; // 1..0.3
+		%orig(currentSliderLevel);
 	} else {
 		// arg1 -0.25..-1
 		float distance = threshold; // 0.3
 		float whitePointLevel = -arg1; // 1..0.25
 		float levelBetween0and1 = (whitePointLevel - 0.25f) / 0.75f; // 0..1
-		float newSliderLevel = distance - (levelBetween0and1 * distance); // 0.3..0
-		%orig(newSliderLevel);
+		float currentSliderLevel = distance - (levelBetween0and1 * distance); // 0.3..0
+		%orig(currentSliderLevel);
 	}
 }
 
