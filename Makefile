@@ -8,7 +8,7 @@ TWEAK_NAME = Dimmer
 Dimmer_FRAMEWORKS = MediaAccessibility Preferences
 Dimmer_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
 
-Dimmer_FILES = $(wildcard *.x)
+Dimmer_FILES = $(wildcard *.x *.xm)
 Dimmer_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
