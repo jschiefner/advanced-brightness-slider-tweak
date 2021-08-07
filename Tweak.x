@@ -9,7 +9,7 @@
 -(float)inSmallMode;
 @end
 
-BrightnessManager* manager;
+BrightnessManager *manager;
 
 // TODO: keep track in NSDefaults or whatever to persist after respring
 // TODO: observe external brightness changes and adjust this variable accordingly (if issues with jumping value keeps happening)
@@ -40,7 +40,7 @@ float clampZeroOne(float value) {
 
 %new
 -(BOOL)isBrightnessSlider {
-	return ![self isKindOfClass: [%c(MediaControlsVolumeSliderView) class]];
+	return ![self isKindOfClass:[%c(MediaControlsVolumeSliderView) class]];
 }
 
 %new
@@ -52,7 +52,7 @@ float clampZeroOne(float value) {
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
 	if (![self isBrightnessSlider]) return %orig;
 
-	UIPanGestureRecognizer * recognizer = (UIPanGestureRecognizer *) arg1;
+	UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *) arg1;
 	CGPoint translation = [recognizer translationInView: self];
 	float ytranslation = (float) translation.y / ([self inSmallMode] ? 160.0f : 350.0f);
 
@@ -65,7 +65,7 @@ float clampZeroOne(float value) {
 		float distance = 1 - threshold; // 0.7
 		float upperSectionSliderLevel = currentSliderLevel - threshold; // in 0.7..0
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // in 1..0
-		if ([manager whitePointEnabled]) [manager setWhitePointEnabled: NO];
+		if ([manager whitePointEnabled]) [manager setWhitePointEnabled:NO];
 		[manager setBrightness:newBrightnessLevel];
 		[manager setAutoBrightnessEnabled:YES];
 	} else {
@@ -73,12 +73,11 @@ float clampZeroOne(float value) {
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0.3
 		float newWhitePointLevel = lowerSectionSliderLevel / distance; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
-		if (![manager whitePointEnabled]) [manager setWhitePointEnabled: YES];
+		if (![manager whitePointEnabled]) [manager setWhitePointEnabled:YES];
 		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
-		[self setGlyphState:@"min"];
-	}
+		[self setGlyphState:nil]; // argument is ignored
 }
 
 // example values and ranges assuming threshold == 0.3
@@ -86,12 +85,12 @@ float clampZeroOne(float value) {
 	if(![self isBrightnessSlider]) return %orig;
 
 	if (arg1 >= 0) {
-		// brightness
+		// brightness, arg1 0..1
 		if (currentSliderLevel < threshold) return;
 		currentSliderLevel = arg1 * distance + threshold; // 1..0.3
 		%orig(currentSliderLevel);
 	} else {
-		// arg1 -0.25..-1
+		// white point, arg1 -0.25..-1
 		float whitePointLevel = -arg1; // 1..0.25
 		float levelBetween0and1 = (whitePointLevel - 0.25f) / 0.75f; // 0..1
 		currentSliderLevel = threshold - (levelBetween0and1 * threshold); // 0.3..0
