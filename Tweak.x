@@ -3,7 +3,7 @@
 @interface CCUIContinuousSliderView : UIControl
 -(void)_handleValueChangeGestureRecognizer:(id)arg1;
 -(BOOL)isGlyphVisible;
--(CGSize)size;
+-(void)setGlyphState:(NSString *)arg1;
 -(void)setValue:(float)arg1;
 -(BOOL)isBrightnessSlider;
 -(float)inSmallMode;
@@ -15,8 +15,9 @@ BrightnessManager* manager;
 // TODO: observe external brightness changes and adjust this variable accordingly (if issues with jumping value keeps happening)
 float currentSliderLevel;
 
-float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float threshold = 0.3; // value where slider switches from brightness to
+float oldSliderLevel; // keep track of where slider was to calculate panning offset
+float distance;
 
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
@@ -32,6 +33,7 @@ float clampZeroOne(float value) {
 		manager = [[%c(BrightnessManager) alloc] init];
 		currentSliderLevel = [manager brightness] * (1-threshold) + threshold;
 		oldSliderLevel = currentSliderLevel;
+		distance = 1 - threshold;
 	}
 	return orig;
 }
@@ -68,13 +70,14 @@ float clampZeroOne(float value) {
 		[manager setAutoBrightnessEnabled:YES];
 	} else {
 		float distance = threshold; // 0.3
-		float lowerSectionSliderLevel = currentSliderLevel; // 0..0..3
+		float lowerSectionSliderLevel = currentSliderLevel; // 0..0.3
 		float newWhitePointLevel = lowerSectionSliderLevel / distance; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
 		if (![manager whitePointEnabled]) [manager setWhitePointEnabled: YES];
 		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
+		[self setGlyphState:@"min"];
 	}
 }
 
@@ -85,16 +88,32 @@ float clampZeroOne(float value) {
 	if (arg1 >= 0) {
 		// brightness
 		if (currentSliderLevel < threshold) return;
-		float distance = 1 - threshold; // 0.7
 		currentSliderLevel = arg1 * distance + threshold; // 1..0.3
 		%orig(currentSliderLevel);
 	} else {
 		// arg1 -0.25..-1
-		float distance = threshold; // 0.3
 		float whitePointLevel = -arg1; // 1..0.25
 		float levelBetween0and1 = (whitePointLevel - 0.25f) / 0.75f; // 0..1
-		currentSliderLevel = distance - (levelBetween0and1 * distance); // 0.3..0
+		currentSliderLevel = threshold - (levelBetween0and1 * threshold); // 0.3..0
 		%orig(currentSliderLevel);
+	}
+}
+
+-(void)setGlyphState:(NSString *)arg1 {
+	if (![self isBrightnessSlider]) return %orig(arg1);
+
+	// possible arg1 values: min, mid, full, max
+	if (currentSliderLevel < threshold) {
+		%orig(@"min");
+	} else {
+		float brightness = [manager brightness];
+		if (brightness == 1.0f) {
+			%orig(@"max");
+		} else if (brightness > 0.5f) {
+			%orig(@"full");
+		} else {
+			%orig(@"mid");
+		}
 	}
 }
 
