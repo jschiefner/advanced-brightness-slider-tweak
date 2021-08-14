@@ -78,6 +78,7 @@ float clampZeroOne(float value) {
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
 		[self setGlyphState:nil]; // argument is ignored
+	}
 }
 
 // example values and ranges assuming threshold == 0.3
@@ -116,4 +117,4 @@ float clampZeroOne(float value) {
 	}
 }
 
-%end;
+%end
