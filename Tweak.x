@@ -9,6 +9,16 @@
 -(float)inSmallMode;
 @end
 
+@interface CCUICAPackageDescription : NSObject
+-(NSURL *)packageURL;
+@end
+
+@interface CCUICAPackageView : UIView
+-(CCUICAPackageDescription*)packageDescription;
+-(void)setStateName:(NSString*)arg1;
+-(BOOL)isBrightnessTopGlyph;
+@end
+
 BrightnessManager *manager;
 
 // TODO: keep track in NSDefaults or whatever to persist after respring
@@ -19,10 +29,29 @@ float threshold = 0.3; // value where slider switches from brightness to
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float distance;
 
+CCUICAPackageView* topBrightnessGlyphPackage;
+NSString* glyphState;
+
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
 	else if (value < 0) return 0.0f;
 	else return value;
+}
+
+void calculateGlyphState() {
+	// possible arg1 values: min, mid, full, max
+	if (currentSliderLevel < threshold) {
+		glyphState = @"min";
+	} else {
+		float brightness = [manager brightness];
+		if (currentSliderLevel == 1.0f) {
+			glyphState = @"max";
+		} else if (brightness > 0.5f) {
+			glyphState = @"full";
+		} else {
+			glyphState = @"mid";
+		}
+	}
 }
 
 %hook CCUIContinuousSliderView
@@ -61,23 +90,25 @@ float clampZeroOne(float value) {
 	}
 
 	currentSliderLevel = clampZeroOne(oldSliderLevel - ytranslation);
-	if (currentSliderLevel >= threshold) {
-		float distance = 1 - threshold; // 0.7
+	calculateGlyphState();
+	if (currentSliderLevel >= threshold) { // brightness
 		float upperSectionSliderLevel = currentSliderLevel - threshold; // in 0.7..0
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // in 1..0
 		if ([manager whitePointEnabled]) [manager setWhitePointEnabled:NO];
 		[manager setBrightness:newBrightnessLevel];
 		[manager setAutoBrightnessEnabled:YES];
-	} else {
-		float distance = threshold; // 0.3
+	} else { // whitepoint
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0.3
-		float newWhitePointLevel = lowerSectionSliderLevel / distance; // 0..1
+		float newWhitePointLevel = lowerSectionSliderLevel / threshold; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
 		if (![manager whitePointEnabled]) [manager setWhitePointEnabled:YES];
 		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
 		[self setGlyphState:nil]; // argument is ignored
+		if (topBrightnessGlyphPackage != nil) {
+			[topBrightnessGlyphPackage setStateName:nil]; // argument is ignored
+		}
 	}
 }
 
@@ -100,20 +131,31 @@ float clampZeroOne(float value) {
 }
 
 -(void)setGlyphState:(NSString *)arg1 {
-	if (![self isBrightnessSlider]) return %orig(arg1);
-
-	// possible arg1 values: min, mid, full, max
-	if (currentSliderLevel < threshold) {
-		%orig(@"min");
+	if (![self isBrightnessSlider]) {
+		%orig(arg1);
 	} else {
-		float brightness = [manager brightness];
-		if (brightness == 1.0f) {
-			%orig(@"max");
-		} else if (brightness > 0.5f) {
-			%orig(@"full");
-		} else {
-			%orig(@"mid");
-		}
+		%orig(glyphState);
+	}
+}
+
+%end
+
+%hook CCUICAPackageView
+
+%new
+-(BOOL)isBrightnessTopGlyph {
+	NSString* packageName = [[[self packageDescription] packageURL] absoluteString];
+	BOOL isBrightnessPackage = [packageName isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
+	BOOL isTop = ![[self superview] isKindOfClass:[%c(CCUIContinuousSliderView) class]];
+	return isBrightnessPackage && isTop;
+}
+
+-(void)setStateName:(NSString*)arg1 {
+	if ([self isBrightnessTopGlyph]) {
+		topBrightnessGlyphPackage = self;
+		%orig(glyphState);
+	} else {
+		%orig;
 	}
 }
 
