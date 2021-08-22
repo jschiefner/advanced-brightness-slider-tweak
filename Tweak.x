@@ -1,11 +1,10 @@
 #import "BrightnessManager.h"
 
 @interface CCUIContinuousSliderView : UIControl
+@property (nonatomic) BOOL isBrightnessSlider;
 -(void)_handleValueChangeGestureRecognizer:(id)arg1;
--(BOOL)isGlyphVisible;
 -(void)setGlyphState:(NSString *)arg1;
 -(void)setValue:(float)arg1;
--(BOOL)isBrightnessSlider;
 @end
 
 @interface CCUICAPackageDescription : NSObject
@@ -13,23 +12,19 @@
 @end
 
 @interface CCUICAPackageView : UIView
--(CCUICAPackageDescription*)packageDescription;
+@property (nonatomic) BOOL isBrightnessTopGlyph;
+-(void)setPackageDescription:(CCUICAPackageDescription *)arg1 ;
 -(void)setStateName:(NSString*)arg1;
--(BOOL)isBrightnessTopGlyph;
 @end
 
 BrightnessManager *manager;
 
-// TODO: keep track in NSDefaults or whatever to persist after respring
-// TODO: observe external brightness changes and adjust this variable accordingly (if issues with jumping value keeps happening)
-float currentSliderLevel;
-
-float threshold = 0.3; // value where slider switches from brightness to
+float currentSliderLevel; // stores the current level the brightness slider is set to
+float threshold = 0.3; // value where slider switches from brightness to white point
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
-float distance;
-
-CCUICAPackageView* topBrightnessGlyphPackage;
-NSString* glyphState;
+float distance; // will be set to 1 - threshold
+NSString* glyphState; // stores current state of the glyph
+CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
 
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
@@ -54,26 +49,25 @@ void calculateGlyphState() {
 }
 
 %hook CCUIContinuousSliderView
+%property (nonatomic) BOOL isBrightnessSlider;
 
--(id)initWithFrame:(CGRect)arg1 {
-	id orig = %orig;
-	if ([orig isBrightnessSlider]) {
+-(void)setGlyphPackageDescription:(CCUICAPackageDescription *)arg1 {
+	%orig;
+	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
+	if (isBrightnessPackage) {
 		manager = [[%c(BrightnessManager) alloc] init];
 		currentSliderLevel = [manager brightness] * (1-threshold) + threshold;
 		oldSliderLevel = currentSliderLevel;
 		distance = 1 - threshold;
+		self.isBrightnessSlider = YES;
+	} else {
+		self.isBrightnessSlider = NO;
 	}
-	return orig;
-}
-
-%new
--(BOOL)isBrightnessSlider {
-	return ![self isKindOfClass:[%c(MediaControlsVolumeSliderView) class]];
 }
 
 // example values and ranges assuming threshold == 0.3
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
-	if (![self isBrightnessSlider]) return %orig;
+	if (!self.isBrightnessSlider) return %orig;
 
 	UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *) arg1;
 	CGPoint translation = [recognizer translationInView: self];
@@ -100,15 +94,15 @@ void calculateGlyphState() {
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
 		[self setGlyphState:nil]; // argument is ignored
-		if (topBrightnessGlyphPackage != nil) {
-			[topBrightnessGlyphPackage setStateName:nil]; // argument is ignored
+		if (brightnessTopGlyphPackageView != nil) {
+			[brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
 		}
 	}
 }
 
 // example values and ranges assuming threshold == 0.3
 -(void)setValue:(float)arg1 {
-	if(![self isBrightnessSlider]) return %orig;
+	if(!self.isBrightnessSlider) return %orig;
 
 	if (arg1 >= 0) {
 		// brightness, arg1 0..1
@@ -125,28 +119,28 @@ void calculateGlyphState() {
 }
 
 -(void)setGlyphState:(NSString *)arg1 {
-	if (![self isBrightnessSlider]) {
-		%orig(arg1);
-	} else {
-		%orig(glyphState);
-	}
+	self.isBrightnessSlider ? %orig(glyphState) : %orig;
 }
 
 %end
 
 %hook CCUICAPackageView
+%property (nonatomic) BOOL isBrightnessTopGlyph;
 
-%new
--(BOOL)isBrightnessTopGlyph {
-	NSString* packageName = [[[self packageDescription] packageURL] absoluteString];
-	BOOL isBrightnessPackage = [packageName isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
+-(void)setPackageDescription:(CCUICAPackageDescription *)arg1 {
+	%orig;
+	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 	BOOL isTop = ![[self superview] isKindOfClass:[%c(CCUIContinuousSliderView) class]];
-	return isBrightnessPackage && isTop;
+	if (isBrightnessPackage && isTop) {
+		self.isBrightnessTopGlyph = YES;
+		brightnessTopGlyphPackageView = self;
+	} else {
+		self.isBrightnessTopGlyph = NO;
+	}
 }
 
 -(void)setStateName:(NSString*)arg1 {
-	if ([self isBrightnessTopGlyph]) {
-		topBrightnessGlyphPackage = self;
+	if (self.isBrightnessTopGlyph) {
 		%orig(glyphState);
 	} else {
 		%orig;
