@@ -6,7 +6,6 @@
 -(void)setGlyphState:(NSString *)arg1;
 -(void)setValue:(float)arg1;
 -(BOOL)isBrightnessSlider;
--(float)inSmallMode;
 @end
 
 @interface CCUICAPackageDescription : NSObject
@@ -72,18 +71,13 @@ void calculateGlyphState() {
 	return ![self isKindOfClass:[%c(MediaControlsVolumeSliderView) class]];
 }
 
-%new
--(float) inSmallMode {
-	return [self isGlyphVisible];
-}
-
 // example values and ranges assuming threshold == 0.3
 -(void)_handleValueChangeGestureRecognizer:(id)arg1 {
 	if (![self isBrightnessSlider]) return %orig;
 
 	UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *) arg1;
 	CGPoint translation = [recognizer translationInView: self];
-	float ytranslation = (float) translation.y / ([self inSmallMode] ? 160.0f : 350.0f);
+	float ytranslation = (float) translation.y / [self frame].size.height;
 
 	if ([recognizer state] == UIGestureRecognizerStateBegan) {
 		oldSliderLevel = currentSliderLevel;
