@@ -3,7 +3,7 @@
 @interface CCUIContinuousSliderView : UIControl
 @property (nonatomic) BOOL isBrightnessSlider;
 -(void)_handleValueChangeGestureRecognizer:(id)arg1;
--(void)setGlyphState:(NSString *)arg1;
+-(void)setGlyphState:(NSString*)arg1;
 -(void)setValue:(float)arg1;
 @end
 
@@ -13,12 +13,11 @@
 
 @interface CCUICAPackageView : UIView
 @property (nonatomic) BOOL isBrightnessTopGlyph;
--(void)setPackageDescription:(CCUICAPackageDescription *)arg1 ;
+-(void)setPackageDescription:(CCUICAPackageDescription*)arg1;
 -(void)setStateName:(NSString*)arg1;
 @end
 
-BrightnessManager *manager;
-
+BrightnessManager *manager; // Manager class implementing system calls
 float currentSliderLevel; // stores the current level the brightness slider is set to
 float threshold = 0.3; // value where slider switches from brightness to white point
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
@@ -51,11 +50,11 @@ void calculateGlyphState() {
 %hook CCUIContinuousSliderView
 %property (nonatomic) BOOL isBrightnessSlider;
 
--(void)setGlyphPackageDescription:(CCUICAPackageDescription *)arg1 {
+-(void)setGlyphPackageDescription:(CCUICAPackageDescription*)arg1 {
 	%orig;
 	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 	if (isBrightnessPackage) {
-		manager = [[%c(BrightnessManager) alloc] init];
+		manager = [[BrightnessManager alloc] init];
 		currentSliderLevel = [manager brightness] * (1-threshold) + threshold;
 		oldSliderLevel = currentSliderLevel;
 		distance = 1 - threshold;
@@ -70,7 +69,7 @@ void calculateGlyphState() {
 	if (!self.isBrightnessSlider) return %orig;
 
 	UIPanGestureRecognizer *recognizer = (UIPanGestureRecognizer *) arg1;
-	CGPoint translation = [recognizer translationInView: self];
+	CGPoint translation = [recognizer translationInView:self];
 	float ytranslation = (float) translation.y / [self frame].size.height;
 
 	if ([recognizer state] == UIGestureRecognizerStateBegan) {
@@ -80,8 +79,8 @@ void calculateGlyphState() {
 	currentSliderLevel = clampZeroOne(oldSliderLevel - ytranslation);
 	calculateGlyphState();
 	if (currentSliderLevel >= threshold) { // brightness
-		float upperSectionSliderLevel = currentSliderLevel - threshold; // in 0.7..0
-		float newBrightnessLevel = upperSectionSliderLevel / distance; // in 1..0
+		float upperSectionSliderLevel = currentSliderLevel - threshold; // 0.7..0
+		float newBrightnessLevel = upperSectionSliderLevel / distance; // 1..0
 		if ([manager whitePointEnabled]) [manager setWhitePointEnabled:NO];
 		[manager setBrightness:newBrightnessLevel];
 		[manager setAutoBrightnessEnabled:YES];
@@ -119,7 +118,7 @@ void calculateGlyphState() {
 	}
 }
 
--(void)setGlyphState:(NSString *)arg1 {
+-(void)setGlyphState:(NSString*)arg1 {
 	self.isBrightnessSlider ? %orig(glyphState) : %orig;
 }
 
@@ -128,7 +127,7 @@ void calculateGlyphState() {
 %hook CCUICAPackageView
 %property (nonatomic) BOOL isBrightnessTopGlyph;
 
--(void)setPackageDescription:(CCUICAPackageDescription *)arg1 {
+-(void)setPackageDescription:(CCUICAPackageDescription*)arg1 {
 	%orig;
 	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 	BOOL isTop = ![[self superview] isKindOfClass:[%c(CCUIContinuousSliderView) class]];
@@ -141,11 +140,7 @@ void calculateGlyphState() {
 }
 
 -(void)setStateName:(NSString*)arg1 {
-	if (self.isBrightnessTopGlyph) {
-		%orig(glyphState);
-	} else {
-		%orig;
-	}
+	self.isBrightnessTopGlyph ? %orig(glyphState) :	%orig;
 }
 
 %end
