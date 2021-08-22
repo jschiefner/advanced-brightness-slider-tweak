@@ -90,6 +90,7 @@ void calculateGlyphState() {
 		float newWhitePointLevel = lowerSectionSliderLevel / threshold; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
 		if (![manager whitePointEnabled]) [manager setWhitePointEnabled:YES];
+		if ([manager brightness] > 0.0f) [manager setBrightness:0.0f];
 		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
