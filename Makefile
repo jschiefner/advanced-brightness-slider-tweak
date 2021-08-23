@@ -12,3 +12,5 @@ AdvancedBrightnessSlider_FILES = $(wildcard *.x *.xm)
 AdvancedBrightnessSlider_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += advancedbrightnesssliderpreferences
+include $(THEOS_MAKE_PATH)/aggregate.mk
