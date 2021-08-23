@@ -19,11 +19,13 @@
 @end
 
 @implementation BrightnessManager {
+  Boolean _shouldModifyAutoBrightness;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
 }
 
--(id)init {
+-(id)initWithAutoBrightnessEnabled:(BOOL)enabled {
+  _shouldModifyAutoBrightness = enabled;
   _brightnessController = [%c(SBDisplayBrightnessController) new];
   return self;
 }
@@ -53,6 +55,7 @@
 }
 
 -(void)setAutoBrightnessEnabled:(BOOL)enabled {
+  if (!_shouldModifyAutoBrightness) return;
   if (enabled && _autoBrightnessShouldBeEnabled) return;
   if (!enabled && !_autoBrightnessShouldBeEnabled) return;
 

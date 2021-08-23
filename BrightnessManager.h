@@ -1,5 +1,5 @@
 @interface BrightnessManager : NSObject
--(id)init;
+-(id)initWithAutoBrightnessEnabled:(BOOL)enabled;
 -(void)setBrightness:(float)amount;
 -(float)brightness;
 -(BOOL)whitePointEnabled;
