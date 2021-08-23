@@ -15,7 +15,7 @@
 		<key>isController</key>
 		<true/>
 		<key>label</key>
-		<string>AdvancedBrightnessSliderPreferences</string>
+		<string>AdvancedBrightnessSlider</string>
 	</dict>
 </dict>
 </plist>

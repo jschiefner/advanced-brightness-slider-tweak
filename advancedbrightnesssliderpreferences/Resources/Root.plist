@@ -8,22 +8,100 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>AdvancedBrightnessSliderPreferences First Page</string>
+			<string>Threshold</string>
+			<key>footerText</key>
+			<string>This controls the percentage of space the brightness slider will use in the bottom for the white point setting vs. how much space will be left in the top for the actual brightness setting. Setting this to a lower value means less space will be left for the white point setting, setting this to a higher value means there will be less space for the brightness setting. Setting this to 50% will divide the slider in half. The slider brightness icon will always turn to its minimum state when the slider is in its white point position. Options are from 10% to 90% in 10% steps.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>label</key>
+			<string>Threshold</string>
+			<key>default</key>
+			<real>30</real>
+			<key>defaults</key>
+			<string>com.jschiefner.advancedbrightnesssliderpreferences</string>
+			<key>key</key>
+			<string>threshold</string>
+			<key>min</key>
+			<integer>10</integer>
+			<key>max</key>
+			<integer>90</integer>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>8</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Auto-Brightness Handling</string>
+			<key>footerText</key>
+			<string>This toggle modifies whether the tweak should modify the Auto-Brightness Setting found in Accessibility &gt; Display &amp; Text Size &gt; Auto-Brightness. This is recommended so it is turned on by default. The tweak can toggle off the Auto-Brightness setting when the brightness is at zero to prevent the device from raising the brightness if you want your device to be dim. If you turn this off, the tweak will never modify the Auto-Brightness Setting. You should then go and manually turn off the Auto-Brightness setting. Leaving it on might cause the brightness slider to behave unexpectedly, but the tweak should still work.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
+			<key>label</key>
+			<string>Modify Auto-Brightness</string>
 			<key>default</key>
 			<true/>
 			<key>defaults</key>
 			<string>com.jschiefner.advancedbrightnesssliderpreferences</string>
 			<key>key</key>
-			<string>AwesomeSwitch1</string>
+			<string>modifyAutoBrightness</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Awesome Switch 1</string>
+			<string>Apply Changes</string>
+			<key>footerText</key>
+			<string>To apply changes made to these settings, you need to Respring your Device.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Respring</string>
+			<key>action</key>
+			<string>respring</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Misc.</string>
+			<key>footerText</key>
+			<string>If you have any issues, please file an Issue on GitHub. Here, you can also take a look at the source code of this tweak. If you like the project and want to support me you can donate via PayPal.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Open GitHub Project</string>
+			<key>action</key>
+			<string>openGithub</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>github.png</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Donate via PayPal</string>
+			<key>action</key>
+			<string>openPaypal</string>
+			<key>hasIcon</key>
+			<true/>
+			<key>icon</key>
+			<string>paypal.png</string>
 		</dict>
 	</array>
 	<key>title</key>
-	<string>AdvancedBrightnessSliderPreferences</string>
+	<string>AdvancedBrightnessSlider</string>
 </dict>
 </plist>

@@ -24,6 +24,19 @@ float oldSliderLevel; // keep track of where slider was to calculate panning off
 float distance; // will be set to 1 - threshold
 NSString* glyphState; // stores current state of the glyph
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
+BOOL shouldModifyAutoBrightness; // stores whether the user wants the tweak to adjust the auto-brightness setting
+
+void initializeAlongSliderView() {
+	// initialize preference variables
+	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
+	// TODO: use the preferences
+
+	// initialize global variables
+	manager = [[BrightnessManager alloc] init];
+	currentSliderLevel = [manager brightness] * (1-threshold) + threshold;
+	oldSliderLevel = currentSliderLevel;
+	distance = 1 - threshold;
+}
 
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
@@ -54,10 +67,7 @@ void calculateGlyphState() {
 	%orig;
 	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 	if (isBrightnessPackage) {
-		manager = [[BrightnessManager alloc] init];
-		currentSliderLevel = [manager brightness] * (1-threshold) + threshold;
-		oldSliderLevel = currentSliderLevel;
-		distance = 1 - threshold;
+		initializeAlongSliderView();
 		self.isBrightnessSlider = YES;
 	} else {
 		self.isBrightnessSlider = NO;
