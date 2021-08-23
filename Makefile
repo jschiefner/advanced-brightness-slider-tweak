@@ -4,11 +4,11 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = Dimmer
-Dimmer_FRAMEWORKS = MediaAccessibility Preferences
-Dimmer_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
+TWEAK_NAME = AdvancedBrightnessSlider
+AdvancedBrightnessSlider_FRAMEWORKS = MediaAccessibility Preferences
+AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
 
-Dimmer_FILES = $(wildcard *.x *.xm)
-Dimmer_CFLAGS = -fobjc-arc
+AdvancedBrightnessSlider_FILES = $(wildcard *.x *.xm)
+AdvancedBrightnessSlider_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk

@@ -1,6 +1,6 @@
-# Dimmer Tweak
+# Advanced Brightness Slider Tweak
 
-<img src="https://github.com/jschiefner/dimmer-tweak/blob/main/screenshots/slider_annotated.png?raw=true" width="200" alt="Slider in Control Center" align="right">
+<img src="https://github.com/jschiefner/advanced-brightness-slider-tweak/blob/main/screenshots/slider_annotated.png?raw=true" width="200" alt="Slider in Control Center" align="right">
 
 This is an iOS Tweak that modifies the brightness slider in the Control Center. Even with dark mode toggled on, I found the display to be quite bright when reading in the dark. With this tweak, it becomes possible to dim the iPhone even below the regular minimum brightness allowed right from the control center. This tweak takes advantage of the `Reduce White Point` Setting usually found in `Settings > Accessibility > Display & Text Size > Reduce White Point`. When the brightness slider goes below a certain threshold, the brightness goes to zero and the `Reduce White Point` setting is activated. Sliding below that threshold then modifies the `Reduce White Point intensity`, instead of the usual brightness which is zero at that point. As well, the `Auto Brightness` feature of iOS is toggled off when the slider is below the threshold to prevent iOS from raising the brightness in that state.
 
