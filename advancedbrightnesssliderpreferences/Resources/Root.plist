@@ -10,7 +10,7 @@
 			<key>label</key>
 			<string>Threshold</string>
 			<key>footerText</key>
-			<string>This controls the percentage of space the brightness slider will use in the bottom for the white point setting vs. how much space will be left in the top for the actual brightness setting. Setting this to a lower value means less space will be left for the white point setting, setting this to a higher value means there will be less space for the brightness setting. Setting this to 50% will divide the slider in half. The slider brightness icon will always turn to its minimum state when the slider is in its white point position. Options are from 10% to 90% in 10% steps.</string>
+			<string>This controls where the brightness slider will be split into controlling the brightness setting (upper part) and the white point setting (lower part). By default this is set to 30%, which means that the lower 30% of the slider will control the white point setting whereas the top 70% of the slider control the actual screen brightness. While the slider is in white point mode, the sun icon on it will be in its smallest state.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -27,6 +27,8 @@
 			<integer>10</integer>
 			<key>max</key>
 			<integer>90</integer>
+			<key>showValue</key>
+			<true/>
 			<key>isSegmented</key>
 			<true/>
 			<key>segmentCount</key>
@@ -38,7 +40,7 @@
 			<key>label</key>
 			<string>Auto-Brightness Handling</string>
 			<key>footerText</key>
-			<string>This toggle modifies whether the tweak should modify the Auto-Brightness Setting found in Accessibility &gt; Display &amp; Text Size &gt; Auto-Brightness. This is recommended so it is turned on by default. The tweak can toggle off the Auto-Brightness setting when the brightness is at zero to prevent the device from raising the brightness if you want your device to be dim. If you turn this off, the tweak will never modify the Auto-Brightness Setting. You should then go and manually turn off the Auto-Brightness setting. Leaving it on might cause the brightness slider to behave unexpectedly, but the tweak should still work.</string>
+			<string>This changes whether the tweak should modify the Auto-Brightness setting found in Accessibility &gt; Display &amp; Text Size &gt; Auto-Brightness. This is recommended so it is turned on by default. The tweak will then automatically disable Auto-Brightness while it is in white point mode to avoid the device from raising the brightness automatically. Sliding it up to control the brightness again will enable Auto-Brightness. Disabling this feature might cause unexpected behaviour with the slider, the tweak should still work however.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -72,15 +74,15 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Misc.</string>
+			<string>More</string>
 			<key>footerText</key>
-			<string>If you have any issues, please file an Issue on GitHub. Here, you can also take a look at the source code of this tweak. If you like the project and want to support me you can donate via PayPal.</string>
+			<string>If you have any problems, please file an issue on GitHub. There, you can also take a look at the source code of this tweak and learn more about how it works. If you like the project and want to support me you can donate via PayPal.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
-			<string>Open GitHub Project</string>
+			<string>Open on GitHub</string>
 			<key>action</key>
 			<string>openGithub</string>
 			<key>hasIcon</key>
