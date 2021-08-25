@@ -12,7 +12,7 @@
 	return _specifiers;
 }
 
-// credits: https://github.com/Muirey03/PowerModule/blob/master/Source/RespringButtonController.m
+// credits: https://github.com/Muirey03/PowerModule/blob/364b91400152f6c2a319dffe136948dec53f1ad6/Source/RespringButtonController.m#L30-L37
 -(void)respring {
 	pid_t pid;
 	int status;

@@ -8,6 +8,8 @@ This is an iOS Tweak that modifies the brightness slider in the Control Center. 
 
 This tweak hooks into `CCUIContinuousSliderView` provided by `ControlCenterUIKit.framework`. This class represents the two sliders in the control center (brightness & volume). The volume slider is a subclass of `CCUIContinuousSliderView` so checking the class type when hooking prevents manipulations to be applied to the volume slider as well. System API calls can be found in the [BrightnessManager Implementation File](BrightnessManager.xm).
 
-### Thanks to
+### Credits
  - [@opa334](https://github.com/opa334) who created a similar tweak [WhitePointModule](https://github.com/opa334/WhitePointModule) where I found the [API]() to manipulate the `Reduce White Point intensity`
  - [@rpetrich](https://github.com/rpetrich) who helped made the [FlipSwitch](https://github.com/a3tweaks/Flipswitch) library where i found the API to manipulate the `Auto Brightnes` Setting.
+- [@Muirey03](https://github.com/Muirey03) who created the [PowerModule](https://github.com/Muirey03/PowerModule) tweak where i found a method to respring the device.
+- [@zaneh](https://github.com/zaneh) who made a great [Video Series](https://www.youtube.com/playlist?list=PLFWEDfSyl7h_K8Ew4rwTzlUPgWU7nKYri) on developing iOS Tweaks.

@@ -47,10 +47,12 @@
 }
 
 -(void)setWhitePointLevel:(float)amount {
+  // credits: https://github.com/opa334/WhitePointModule/blob/944087e67d1bed03282240e16d7e78294f59e865/WhitePointModule.m#L105
   MADisplayFilterPrefSetReduceWhitePointIntensity(amount);
 }
 
 -(float)whitePointLevel {
+  // credits: https://github.com/opa334/WhitePointModule/blob/944087e67d1bed03282240e16d7e78294f59e865/WhitePointModule.m#L79
   return MADisplayFilterPrefGetReduceWhitePointIntensity();
 }
 
@@ -59,6 +61,7 @@
   if (enabled && _autoBrightnessShouldBeEnabled) return;
   if (!enabled && !_autoBrightnessShouldBeEnabled) return;
 
+  // credits: https://github.com/a3tweaks/Flipswitch/blob/c1fe70e25d843c1c55b1df954b256ca5850910af/Switches/AutoBrightness.x#L28-L30
   CFPreferencesSetAppValue(kABSAutoBrightnessKey, enabled ? kCFBooleanTrue : kCFBooleanFalse, kABSBackboard);
   CFPreferencesAppSynchronize(kABSBackboard);
   _autoBrightnessShouldBeEnabled = enabled;
