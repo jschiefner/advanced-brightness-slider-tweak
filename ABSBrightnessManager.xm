@@ -1,4 +1,4 @@
-#import "BrightnessManager.h"
+#import "ABSBrightnessManager.h"
 #import "ReduceWhitePointLevel.h"
 
 #define kABSBackboard CFSTR("com.apple.backboardd")
@@ -18,7 +18,7 @@
 -(void)setReduceWhitePointEnabled:(BOOL)arg1;
 @end
 
-@implementation BrightnessManager {
+@implementation ABSBrightnessManager {
   Boolean _shouldModifyAutoBrightness;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;

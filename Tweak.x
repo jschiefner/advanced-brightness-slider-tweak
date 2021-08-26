@@ -1,4 +1,4 @@
-#import "BrightnessManager.h"
+#import "ABSBrightnessManager.h"
 
 @interface CCUIContinuousSliderView : UIControl
 @property (nonatomic) BOOL isBrightnessSlider;
@@ -17,7 +17,7 @@
 -(void)setStateName:(NSString*)arg1;
 @end
 
-BrightnessManager *manager; // Manager class implementing system calls
+ABSBrightnessManager *manager; // Manager class implementing system calls
 float currentSliderLevel; // stores the current level the brightness slider is set to
 float threshold; // value where slider switches from brightness to white point
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
@@ -32,7 +32,7 @@ void initializeAlongSliderView() {
 	threshold = [[bundleDefaults valueForKey:@"threshold"] floatValue] / 100.0f;
 
 	// initialize global variables
-	manager = [[BrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness];
+	manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness];
 	oldSliderLevel = currentSliderLevel;
 	distance = 1 - threshold;
 	currentSliderLevel = [manager brightness] * distance + threshold;
