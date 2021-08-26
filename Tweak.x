@@ -25,19 +25,6 @@ float distance; // will be set to 1 - threshold
 NSString* glyphState; // stores current state of the glyph
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
 
-void initializeAlongSliderView() {
-	// initialize preference variables
-	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
-	BOOL shouldModifyAutoBrightness = [[bundleDefaults valueForKey:@"modifyAutoBrightness"] boolValue];
-	threshold = [[bundleDefaults valueForKey:@"threshold"] floatValue] / 100.0f;
-
-	// initialize global variables
-	manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness];
-	oldSliderLevel = currentSliderLevel;
-	distance = 1 - threshold;
-	currentSliderLevel = [manager brightness] * distance + threshold;
-}
-
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
 	else if (value < 0) return 0.0f;
@@ -60,18 +47,14 @@ void calculateGlyphState() {
 	}
 }
 
+%group Tweak
+
 %hook CCUIContinuousSliderView
 %property (nonatomic) BOOL isBrightnessSlider;
 
 -(void)setGlyphPackageDescription:(CCUICAPackageDescription*)arg1 {
 	%orig;
-	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
-	if (isBrightnessPackage) {
-		initializeAlongSliderView();
-		self.isBrightnessSlider = YES;
-	} else {
-		self.isBrightnessSlider = NO;
-	}
+	self.isBrightnessSlider = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 }
 
 // example values and ranges assuming threshold == 0.3
@@ -154,3 +137,19 @@ void calculateGlyphState() {
 }
 
 %end
+
+%end
+
+%ctor {
+	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
+	BOOL enabled = [[bundleDefaults valueForKey:@"enabled"] boolValue];
+	if (enabled) {
+		BOOL shouldModifyAutoBrightness = [[bundleDefaults valueForKey:@"modifyAutoBrightness"] boolValue];
+		threshold = [[bundleDefaults valueForKey:@"threshold"] floatValue] / 100.0f;
+		manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness];
+		distance = 1 - threshold;
+		currentSliderLevel = [manager brightness] * distance + threshold;
+		oldSliderLevel = currentSliderLevel;
+		%init(Tweak);
+	}
+}
