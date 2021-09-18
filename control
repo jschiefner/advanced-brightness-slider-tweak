@@ -1,6 +1,6 @@
 Package: com.jschiefner.advancedbrightnessslider
 Name: AdvancedBrightnessSlider
-Version: 0.1.0
+Version: 0.1.1
 Architecture: iphoneos-arm
 Description: Tweak to dim the screen even further with the brightness slider in Control Center
 Maintainer: Jonas Schiefner
