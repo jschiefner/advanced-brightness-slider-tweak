@@ -20,12 +20,14 @@
 
 @implementation ABSBrightnessManager {
   Boolean _shouldModifyAutoBrightness;
+  int _iosVersion;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
 }
 
--(id)initWithAutoBrightnessEnabled:(BOOL)enabled {
+-(id)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion {
   _shouldModifyAutoBrightness = enabled;
+  _iosVersion = iosVersion;
   _brightnessController = [%c(SBDisplayBrightnessController) new];
   return self;
 }

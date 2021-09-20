@@ -24,6 +24,7 @@ float oldSliderLevel; // keep track of where slider was to calculate panning off
 float distance; // will be set to 1 - threshold
 NSString* glyphState; // stores current state of the glyph
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
+int iosVersion; // stores the major ios version
 
 float clampZeroOne(float value) {
 	if (value > 1) return 1.0f;
@@ -146,8 +147,9 @@ void calculateGlyphState() {
 	BOOL enabled = [bundleDefaults objectForKey:@"enabled"] == nil ? YES : [[bundleDefaults objectForKey:@"enabled"] boolValue];
 	if (enabled) {
 		BOOL shouldModifyAutoBrightness = [bundleDefaults objectForKey:@"modifyAutoBrightness"] == nil ? YES : [[bundleDefaults objectForKey:@"modifyAutoBrightness"] boolValue];
+		iosVersion = [[[UIDevice currentDevice] systemVersion] intValue];
 		threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
-		manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness];
+		manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion];
 		distance = 1 - threshold;
 		currentSliderLevel = [manager brightness] * distance + threshold;
 		oldSliderLevel = currentSliderLevel;
