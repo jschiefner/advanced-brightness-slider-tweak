@@ -8,8 +8,15 @@
 @property float _backlightLevel;
 @end
 
+// used in iOS 14
 @interface SBDisplayBrightnessController : NSObject
--(void) setBrightnessLevel:(float) arg1;
+-(void)setBrightnessLevel:(float)arg1;
+@end
+
+// used in iOS 13
+@interface SBBrightnessController
++(id)sharedBrightnessController;
+-(void)setBrightnessLevel:(float)arg1;
 @end
 
 @interface AXSettings
@@ -28,12 +35,13 @@
 -(id)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion {
   _shouldModifyAutoBrightness = enabled;
   _iosVersion = iosVersion;
-  _brightnessController = [%c(SBDisplayBrightnessController) new];
+  if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
   return self;
 }
 
 -(void)setBrightness:(float)amount {
-  [_brightnessController setBrightnessLevel:amount];
+  if (_iosVersion >= 14) [_brightnessController setBrightnessLevel:amount];
+  else [[%c(SBBrightnessController) sharedBrightnessController] setBrightnessLevel:amount];
 }
 
 -(float)brightness {
