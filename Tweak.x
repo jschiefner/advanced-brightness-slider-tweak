@@ -22,6 +22,7 @@ float currentSliderLevel; // stores the current level the brightness slider is s
 float threshold; // value where slider switches from brightness to white point
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
 float distance; // will be set to 1 - threshold
+float halfDistance; // half between threshold and 1
 NSString* glyphState; // stores current state of the glyph
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
 int iosVersion; // stores the major iOS version
@@ -37,10 +38,9 @@ void calculateGlyphState() {
 	if (currentSliderLevel < threshold) {
 		glyphState = @"min";
 	} else {
-		float brightness = [manager brightness];
 		if (currentSliderLevel == 1.0f) {
 			glyphState = @"max";
-		} else if (brightness > 0.5f) {
+		} else if (currentSliderLevel > halfDistance) {
 			glyphState = @"full";
 		} else {
 			glyphState = @"mid";
@@ -75,7 +75,7 @@ void calculateGlyphState() {
 	if (currentSliderLevel >= threshold) { // brightness
 		float upperSectionSliderLevel = currentSliderLevel - threshold; // 0.7..0
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // 1..0
-		if ([manager whitePointEnabled]) [manager setWhitePointEnabled:NO];
+		[manager setWhitePointEnabled:NO];
 		[manager setBrightness:newBrightnessLevel];
 		[manager setAutoBrightnessEnabled:YES];
 		if (iosVersion < 14) [self setValue:newBrightnessLevel]; // called automatically on iOS 14
@@ -83,15 +83,13 @@ void calculateGlyphState() {
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0.3
 		float newWhitePointLevel = lowerSectionSliderLevel / threshold; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
-		if (![manager whitePointEnabled]) [manager setWhitePointEnabled:YES];
-		if ([manager brightness] > 0.0f) [manager setBrightness:0.0f];
+		[manager setWhitePointEnabled:YES];
 		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
 		[manager setAutoBrightnessEnabled:NO];
 		[self setGlyphState:nil]; // argument is ignored
-		if (brightnessTopGlyphPackageView != nil) {
+		if (brightnessTopGlyphPackageView != nil)
 			[brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
-		}
 	}
 }
 
@@ -152,6 +150,7 @@ void calculateGlyphState() {
 		threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
 		manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion];
 		distance = 1 - threshold;
+		halfDistance = distance / 2 + threshold;
 		currentSliderLevel = [manager brightness] * distance + threshold;
 		oldSliderLevel = currentSliderLevel;
 		%init(Tweak);

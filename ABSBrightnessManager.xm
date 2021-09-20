@@ -29,6 +29,7 @@
   Boolean _shouldModifyAutoBrightness;
   int _iosVersion;
   Boolean _autoBrightnessShouldBeEnabled;
+  Boolean _whitePointShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
 }
 
@@ -53,7 +54,12 @@
 }
 
 -(void)setWhitePointEnabled:(BOOL)enabled {
+  if (enabled && _whitePointShouldBeEnabled) return;
+  if (!enabled && !_whitePointShouldBeEnabled) return;
+
+  if (enabled) [self setBrightness:0.0f];
   [[AXSettings sharedInstance] setReduceWhitePointEnabled: enabled];
+  _whitePointShouldBeEnabled = enabled;
 }
 
 -(void)setWhitePointLevel:(float)amount {
