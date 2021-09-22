@@ -1,5 +1,6 @@
 @interface ABSBrightnessManager : NSObject
--(id)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion;
++(ABSBrightnessManager*)shared;
+-(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion;
 -(void)setBrightness:(float)amount;
 -(float)brightness;
 -(BOOL)whitePointEnabled;

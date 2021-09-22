@@ -1,3 +1,4 @@
+#import "shared.h"
 #import "ABSBrightnessManager.h"
 
 @interface CCUIContinuousSliderView : UIControl
@@ -17,7 +18,6 @@
 -(void)setStateName:(NSString*)arg1;
 @end
 
-ABSBrightnessManager *manager; // Manager class implementing system calls
 float currentSliderLevel; // stores the current level the brightness slider is set to
 float threshold; // value where slider switches from brightness to white point
 float oldSliderLevel; // keep track of where slider was to calculate panning offset
@@ -75,18 +75,18 @@ void calculateGlyphState() {
 	if (currentSliderLevel >= threshold) { // brightness
 		float upperSectionSliderLevel = currentSliderLevel - threshold; // 0.7..0
 		float newBrightnessLevel = upperSectionSliderLevel / distance; // 1..0
-		[manager setWhitePointEnabled:NO];
-		[manager setBrightness:newBrightnessLevel];
-		[manager setAutoBrightnessEnabled:YES];
+		[[ABSBrightnessManager shared] setWhitePointEnabled:NO];
+		[[ABSBrightnessManager shared] setBrightness:newBrightnessLevel];
+		[[ABSBrightnessManager shared] setAutoBrightnessEnabled:YES];
 		if (iosVersion < 14) [self setValue:newBrightnessLevel]; // called automatically on iOS 14
 	} else { // whitepoint
 		float lowerSectionSliderLevel = currentSliderLevel; // 0..0.3
 		float newWhitePointLevel = lowerSectionSliderLevel / threshold; // 0..1
 		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
-		[manager setWhitePointEnabled:YES];
-		[manager setWhitePointLevel:newAdjustedWhitePointLevel];
+		[[ABSBrightnessManager shared] setWhitePointEnabled:YES];
+		[[ABSBrightnessManager shared] setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setValue:-newAdjustedWhitePointLevel];
-		[manager setAutoBrightnessEnabled:NO];
+		[[ABSBrightnessManager shared] setAutoBrightnessEnabled:NO];
 		[self setGlyphState:nil]; // argument is ignored
 		if (brightnessTopGlyphPackageView != nil)
 			[brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
@@ -139,34 +139,11 @@ void calculateGlyphState() {
 %end
 %end
 
-%group Prysm
-%hook PrysmSliderViewController
--(void)setProgressValue:(double)arg1 animated:(BOOL)arg2 {
-	%log;
-	%orig;
-}
-%end
-%end
-
-static void didFinishLaunching() {
-	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
-	if (bundleDefaults == nil) bundleDefaults = @{@"enabled":@YES, @"threshold":@30.0f,@"modifyAutoBrightness":@YES};
-	BOOL enabled = [bundleDefaults objectForKey:@"enabled"] == nil ? YES : [[bundleDefaults objectForKey:@"enabled"] boolValue];
-	if (!enabled) return;
-
-	BOOL shouldModifyAutoBrightness = [bundleDefaults objectForKey:@"modifyAutoBrightness"] == nil ? YES : [[bundleDefaults objectForKey:@"modifyAutoBrightness"] boolValue];
-	iosVersion = [[[%c(UIDevice) currentDevice] systemVersion] intValue];
+extern "C" void initNative(NSDictionary* bundleDefaults) {
 	threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
-	manager = [[ABSBrightnessManager alloc] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion];
 	distance = 1 - threshold;
 	halfDistance = distance / 2 + threshold;
-	currentSliderLevel = [manager brightness] * distance + threshold;
+	currentSliderLevel = [[ABSBrightnessManager shared] brightness] * distance + threshold;
 	oldSliderLevel = currentSliderLevel;
-
-	if (NSClassFromString(@"PrysmSliderViewController")) %init(Prysm);
-	%init(Native);
-}
-
-__attribute__((constructor)) static void initialize() {
-  CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, &didFinishLaunching, (CFStringRef)UIApplicationDidFinishLaunchingNotification, NULL, CFNotificationSuspensionBehaviorDrop);
+  %init(Native);
 }

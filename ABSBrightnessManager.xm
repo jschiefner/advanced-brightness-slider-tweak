@@ -33,11 +33,19 @@
   SBDisplayBrightnessController* _brightnessController;
 }
 
--(id)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion {
++(ABSBrightnessManager*)shared {
+  static ABSBrightnessManager *sharedABSBrightnessManager = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedABSBrightnessManager = [self alloc];
+  });
+  return sharedABSBrightnessManager;
+}
+
+-(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion {
   _shouldModifyAutoBrightness = enabled;
   _iosVersion = iosVersion;
   if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
-  return self;
 }
 
 -(void)setBrightness:(float)amount {
