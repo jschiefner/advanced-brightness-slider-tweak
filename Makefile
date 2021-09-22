@@ -5,7 +5,7 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = AdvancedBrightnessSlider
-AdvancedBrightnessSlider_FRAMEWORKS = MediaAccessibility Preferences
+AdvancedBrightnessSlider_FRAMEWORKS = UIKit MediaAccessibility Preferences
 AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
 
 AdvancedBrightnessSlider_FILES = $(wildcard *.x *.xm)
