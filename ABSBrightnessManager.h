@@ -1,6 +1,18 @@
+#ifndef ADVANCED_BRIGHTNESS_SLIDER_MANAGER_H
+#define ADVANCED_BRIGHTNESS_SLIDER_MANAGER_H
+
+#import "shared.h"
+
 @interface ABSBrightnessManager : NSObject
+@property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
+@property (readonly,nonatomic) NSString* glyphState; // stores the current state which the brightness glyph has
+@property (readonly,nonatomic) float threshold; // value where slider switches from brightness to white point
+@property (readonly,nonatomic) float distance; // will be set to 1 - threshold
+@property (readonly,nonatomic) BOOL whitePointShouldBeEnabled; // stores whether the white point setting should be enabled (to avoid syscalls)
+@property (readonly,nonatomic) float iosVersion; // stores the major ios version
 +(ABSBrightnessManager*)shared;
--(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion;
++(float)clampZeroOne:(float)value;
+-(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold;
 -(void)setBrightness:(float)amount;
 -(float)brightness;
 -(BOOL)whitePointEnabled;
@@ -8,4 +20,10 @@
 -(void)setWhitePointLevel:(float)amount;
 -(float)whitePointLevel;
 -(void)setAutoBrightnessEnabled:(BOOL)enabled;
+-(void)calculateGlyphState;
+-(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY;
+-(void)setCurrentSliderLevel:(float)brightnessLevel;
+-(void)setNativeSliderView:(CCUIContinuousSliderView*)view;
 @end
+
+#endif // ADVANCED_BRIGHTNESS_SLIDER_MANAGER_H

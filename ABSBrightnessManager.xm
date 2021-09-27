@@ -23,13 +23,14 @@
 +(id)sharedInstance;
 -(BOOL)reduceWhitePointEnabled;
 -(void)setReduceWhitePointEnabled:(BOOL)arg1;
+// -(void)setReduceWhitePointLevel:(float)arg1; this method does not work, see below for an alternative
 @end
 
 @implementation ABSBrightnessManager {
   Boolean _shouldModifyAutoBrightness;
-  int _iosVersion;
+  float _halfDistance;
+  CCUIContinuousSliderView* _nativeSliderView;
   Boolean _autoBrightnessShouldBeEnabled;
-  Boolean _whitePointShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
 }
 
@@ -42,9 +43,19 @@
   return sharedABSBrightnessManager;
 }
 
--(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion {
++(float)clampZeroOne:(float)value {
+	if (value > 1) return 1.0f;
+	else if (value < 0) return 0.0f;
+	else return value;
+}
+
+-(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold {
   _shouldModifyAutoBrightness = enabled;
   _iosVersion = iosVersion;
+  _threshold = threshold;
+  _distance = 1 - threshold;
+  _currentSliderLevel = [self whitePointEnabled] ? (([self whitePointLevel] - 0.25) / 0.75) * _distance + threshold : ([self brightness] * _distance + threshold);
+  _halfDistance = (1-threshold) / 2 + threshold;
   if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
 }
 
@@ -58,7 +69,8 @@
 }
 
 -(BOOL)whitePointEnabled {
-  return [[AXSettings sharedInstance] reduceWhitePointEnabled];
+  _whitePointShouldBeEnabled = [[AXSettings sharedInstance] reduceWhitePointEnabled];
+  return _whitePointShouldBeEnabled;
 }
 
 -(void)setWhitePointEnabled:(BOOL)enabled {
@@ -89,5 +101,57 @@
   CFPreferencesSetAppValue(kABSAutoBrightnessKey, enabled ? kCFBooleanTrue : kCFBooleanFalse, kABSBackboard);
   CFPreferencesAppSynchronize(kABSBackboard);
   _autoBrightnessShouldBeEnabled = enabled;
+}
+
+-(void)calculateGlyphState {
+  // possible glyphState values: min, mid, full, max
+	if (_currentSliderLevel < _threshold) {
+		_glyphState = @"min";
+	} else {
+		if (_currentSliderLevel == 1.0f) {
+			_glyphState = @"max";
+		} else if (_currentSliderLevel > _halfDistance) {
+			_glyphState = @"full";
+		} else {
+			_glyphState = @"mid";
+		}
+	}
+}
+
+-(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY {
+  CGPoint translationPoint = [recognizer translationInView:view];
+  float translation = (float) isY ? translationPoint.y / [view frame].size.height : -translationPoint.x / [view frame].size.width;
+
+  _currentSliderLevel = [ABSBrightnessManager clampZeroOne:oldSliderLevel-translation];
+  [self calculateGlyphState];
+
+  if (_currentSliderLevel >= _threshold) { // brightness
+    float upperSectionSliderLevel = _currentSliderLevel - _threshold; // 0.7..0
+	  float newBrightnessLevel = upperSectionSliderLevel / _distance; // 1..0
+    [self setWhitePointEnabled:NO];
+    [self setBrightness:newBrightnessLevel];
+    [self setAutoBrightnessEnabled:YES];
+    if (_iosVersion < 14)
+      [_nativeSliderView setValue:-_currentSliderLevel];
+    return YES;
+  } else { // whitepoint
+    float lowerSectionSliderLevel = _currentSliderLevel; // 0..0.3
+		float newWhitePointLevel = lowerSectionSliderLevel / _threshold; // 0..1
+		float newAdjustedWhitePointLevel = 1 - (newWhitePointLevel * 0.75f); // 1..0.25
+		[self setWhitePointEnabled:YES];
+		[self setWhitePointLevel:newAdjustedWhitePointLevel];
+		[self setAutoBrightnessEnabled:NO];
+    [_nativeSliderView setValue:-_currentSliderLevel];
+    return NO;
+  }
+}
+
+-(void)setCurrentSliderLevel:(float)brightnessLevel {
+  // brightnessLevel 0..1 system brightness
+  _currentSliderLevel = brightnessLevel * _distance + _threshold; // 1..0.3
+}
+
+-(void)setNativeSliderView:(CCUIContinuousSliderView*)view {
+  _nativeSliderView = view;
 }
 @end
