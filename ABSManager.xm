@@ -1,4 +1,4 @@
-#import "ABSBrightnessManager.h"
+#import "ABSManager.h"
 #import "ReduceWhitePointLevel.h"
 
 #define kABSBackboard CFSTR("com.apple.backboardd")
@@ -26,7 +26,7 @@
 // -(void)setReduceWhitePointLevel:(float)arg1; this method does not work, see below for an alternative
 @end
 
-@implementation ABSBrightnessManager {
+@implementation ABSManager {
   Boolean _shouldModifyAutoBrightness;
   float _halfDistance;
   CCUIContinuousSliderView* _nativeSliderView;
@@ -34,13 +34,13 @@
   SBDisplayBrightnessController* _brightnessController;
 }
 
-+(ABSBrightnessManager*)shared {
-  static ABSBrightnessManager *sharedABSBrightnessManager = nil;
++(ABSManager*)shared {
+  static ABSManager *sharedABSManager = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    sharedABSBrightnessManager = [self alloc];
+    sharedABSManager = [self alloc];
   });
-  return sharedABSBrightnessManager;
+  return sharedABSManager;
 }
 
 +(float)clampZeroOne:(float)value {
@@ -122,7 +122,7 @@
   CGPoint translationPoint = [recognizer translationInView:view];
   float translation = (float) isY ? translationPoint.y / [view frame].size.height : -translationPoint.x / [view frame].size.width;
 
-  _currentSliderLevel = [ABSBrightnessManager clampZeroOne:oldSliderLevel-translation];
+  _currentSliderLevel = [ABSManager clampZeroOne:oldSliderLevel-translation];
   [self calculateGlyphState];
 
   if (_currentSliderLevel >= _threshold) { // brightness

@@ -1,5 +1,5 @@
 #import "shared.h"
-#import "ABSBrightnessManager.h"
+#import "ABSManager.h"
 
 static void didFinishLaunching(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef info) {
 	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
@@ -11,7 +11,7 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 	int iosVersion = [[[%c(UIDevice) currentDevice] systemVersion] intValue];
 	// example values in the code assume the threshold to be set to 30%
 	float threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
-	[[ABSBrightnessManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
+	[[ABSManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
 
 	if (NSClassFromString(@"PrysmSliderViewController")) initPrysm();
 	initNative();

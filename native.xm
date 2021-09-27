@@ -1,9 +1,9 @@
 #import "shared.h"
-#import "ABSBrightnessManager.h"
+#import "ABSManager.h"
 
 float oldNativeSliderLevel; // keep track of where slider was before panning to calculate panning offset
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
-ABSBrightnessManager* nativeManager; // reference the shared manager object for the Native Group
+ABSManager* nativeManager; // reference the shared manager object for the Native Group
 
 %group Native
 
@@ -65,7 +65,7 @@ ABSBrightnessManager* nativeManager; // reference the shared manager object for 
 %end
 
 extern "C" void initNative() {
-  nativeManager = [ABSBrightnessManager shared];
+  nativeManager = [ABSManager shared];
 	oldNativeSliderLevel = nativeManager.currentSliderLevel;
   %init(Native);
 }

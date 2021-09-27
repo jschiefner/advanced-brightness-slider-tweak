@@ -1,11 +1,11 @@
 #import "shared.h"
-#import "ABSBrightnessManager.h"
+#import "ABSManager.h"
 
 float oldPrysmSliderLevel; // keep track of where slider was before panning to calculate panning offset
 float previousPrysmSliderLevel; // store slider level in the previous call to calculate when haptic feedback should be performed
 BOOL sliderHaptic; // store whether the sliders should perform haptic feedback
 UIImpactFeedbackGenerator* feedbackGenerator; // store a feedback generator when necessary
-ABSBrightnessManager* prysmManager; // reference the shared manager object for the Prysm Group
+ABSManager* prysmManager; // reference the shared manager object for the Prysm Group
 
 %group Prysm
 %hook PrysmSliderViewController
@@ -49,7 +49,7 @@ extern "C" void initPrysm() {
 	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.laughingquoll.prysmprefs"];
 	if (bundleDefaults == nil) sliderHaptic = YES;
 	else sliderHaptic = [bundleDefaults objectForKey:@"sliderHaptic"] == nil ? YES : [[bundleDefaults objectForKey:@"sliderHaptic"] boolValue];
-	prysmManager = [ABSBrightnessManager shared];
+	prysmManager = [ABSManager shared];
 	oldPrysmSliderLevel = prysmManager.currentSliderLevel;
 	previousPrysmSliderLevel = oldPrysmSliderLevel;
 	if (sliderHaptic) feedbackGenerator = [[%c(UIImpactFeedbackGenerator) alloc] initWithStyle:UIImpactFeedbackStyleHeavy];

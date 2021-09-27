@@ -3,14 +3,14 @@
 
 #import "shared.h"
 
-@interface ABSBrightnessManager : NSObject
+@interface ABSManager : NSObject
 @property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
 @property (readonly,nonatomic) NSString* glyphState; // stores the current state which the brightness glyph has
 @property (readonly,nonatomic) float threshold; // value where slider switches from brightness to white point
 @property (readonly,nonatomic) float distance; // will be set to 1 - threshold
 @property (readonly,nonatomic) BOOL whitePointShouldBeEnabled; // stores whether the white point setting should be enabled (to avoid syscalls)
 @property (readonly,nonatomic) float iosVersion; // stores the major ios version
-+(ABSBrightnessManager*)shared;
++(ABSManager*)shared;
 +(float)clampZeroOne:(float)value;
 -(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold;
 -(void)setBrightness:(float)amount;
