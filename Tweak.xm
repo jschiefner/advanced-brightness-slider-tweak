@@ -9,12 +9,21 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 
 	BOOL shouldModifyAutoBrightness = [bundleDefaults objectForKey:@"modifyAutoBrightness"] == nil ? YES : [[bundleDefaults objectForKey:@"modifyAutoBrightness"] boolValue];
 	int iosVersion = [[[%c(UIDevice) currentDevice] systemVersion] intValue];
-	[[ABSBrightnessManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion];
+	// example values in the code assume the threshold to be set to 30%
+	float threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
+	[[ABSBrightnessManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
 
-	if (NSClassFromString(@"PrysmSliderViewController")) initPrysm(bundleDefaults);
-	initNative(bundleDefaults);
+	if (NSClassFromString(@"PrysmSliderViewController")) initPrysm();
+	initNative();
 }
 
 __attribute__((constructor)) static void initialize() {
-  CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(), NULL, &didFinishLaunching, (CFStringRef)UIApplicationDidFinishLaunchingNotification, NULL, CFNotificationSuspensionBehaviorDrop);
+  CFNotificationCenterAddObserver(
+		CFNotificationCenterGetLocalCenter(),
+		NULL,
+		&didFinishLaunching,
+		(CFStringRef) UIApplicationDidFinishLaunchingNotification,
+		NULL,
+		CFNotificationSuspensionBehaviorDrop
+	);
 }
