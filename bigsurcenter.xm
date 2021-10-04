@@ -12,6 +12,14 @@ ABSManager* bigSurManager;
   [bigSurManager setBigSurSliderController:self];
 }
 
+-(void)sliderValueChanged:(UIPanGestureRecognizer*)recognizer {
+  if ([recognizer state] == UIGestureRecognizerStateBegan)
+		oldBigSurSliderLevel = bigSurManager.currentSliderLevel;
+
+  [bigSurManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldBigSurSliderLevel withView:self.sliderView withYDirection:NO];
+  [self updateSliderValue];
+}
+
 -(void)updateSliderValue {
   bigSurManager.whitePointShouldBeEnabled ? [self setImageForFraction:0.f] : [self setImageForFraction:1.f];
 
@@ -24,14 +32,6 @@ ABSManager* bigSurManager;
   float newConstraintConstant = -width + bigSurManager.currentSliderLevel * width;
   [self.sliderLeadingConstraint setConstant:newConstraintConstant];
   [self.view setNeedsLayout];
-}
-
--(void)sliderValueChanged:(UIPanGestureRecognizer*)recognizer {
-  if ([recognizer state] == UIGestureRecognizerStateBegan)
-		oldBigSurSliderLevel = bigSurManager.currentSliderLevel;
-
-  [bigSurManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldBigSurSliderLevel withView:self.sliderView withYDirection:NO];
-  [self updateSliderValue];
 }
 
 %end
