@@ -19,9 +19,8 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
 	if (!self.isBrightnessSlider) return %orig;
 
-	if ([recognizer state] == UIGestureRecognizerStateBegan) {
+	if ([recognizer state] == UIGestureRecognizerStateBegan)
 		oldNativeSliderLevel = nativeManager.currentSliderLevel;
-	}
 
 	BOOL inBrightnessSection = [nativeManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldNativeSliderLevel withView:self withYDirection:YES];
 	if (!inBrightnessSection || nativeManager.iosVersion < 14) {
@@ -35,7 +34,7 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 
 	if (arg1 >= 0) { // brightness, arg1 = system brightness 0..1
 		if (![nativeManager whitePointShouldBeEnabled])
-			[nativeManager setCurrentSliderLevel:arg1];
+			[nativeManager updateCurrentSliderLevelWithSystemBrightness:arg1];
 		%orig(nativeManager.currentSliderLevel);
 	} else { // whitepoint arg1 = currentSliderLevel -0..1
 		%orig(-arg1);

@@ -26,9 +26,12 @@
 // -(void)setReduceWhitePointLevel:(float)arg1; this method does not work, see below for an alternative
 @end
 
+NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
+
 @implementation ABSManager {
   Boolean _shouldModifyAutoBrightness;
   float _halfDistance;
+  int _glyphState;
   CCUIContinuousSliderView* _nativeSliderView;
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
@@ -58,6 +61,7 @@
   _currentSliderLevel = [self whitePointEnabled] ? (([self whitePointLevel] - 0.25) / 0.75) * _distance + threshold : ([self brightness] * _distance + threshold);
   _halfDistance = (1-threshold) / 2 + threshold;
   if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
+  [self calculateGlyphState];
 }
 
 -(void)setBrightness:(float)amount {
@@ -105,18 +109,22 @@
 }
 
 -(void)calculateGlyphState {
-  // possible glyphState values: min, mid, full, max
+  // possible glyphState values: 0: min, 1: mid, 2: full, 3: max
 	if (_currentSliderLevel < _threshold) {
-		_glyphState = @"min";
+		_glyphState = 0;
 	} else {
 		if (_currentSliderLevel == 1.0f) {
-			_glyphState = @"max";
+			_glyphState = 3;
 		} else if (_currentSliderLevel > _halfDistance) {
-			_glyphState = @"full";
+			_glyphState = 2;
 		} else {
-			_glyphState = @"mid";
+			_glyphState = 1;
 		}
 	}
+}
+
+-(NSString*)glyphState {
+  return glyphStates[_glyphState];
 }
 
 -(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY {
@@ -148,7 +156,7 @@
   }
 }
 
--(void)setCurrentSliderLevel:(float)brightnessLevel {
+-(void)updateCurrentSliderLevelWithSystemBrightness:(float)brightnessLevel {
   // brightnessLevel 0..1 system brightness
   _currentSliderLevel = brightnessLevel * _distance + _threshold; // 1..0.3
 }

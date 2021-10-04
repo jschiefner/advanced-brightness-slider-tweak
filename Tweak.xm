@@ -13,8 +13,8 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 	float threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
 	[[ABSManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
 
-	if (NSClassFromString(@"PrysmSliderViewController")) initPrysm();
-	if (NSClassFromString(@"SCDisplaySliderModuleViewController")) initBigSurCenter();
+	if (%c(PrysmSliderViewController)) initPrysm();
+	if (%c(SCDisplaySliderModuleViewController)) initBigSurCenter();
 	initNative();
 }
 

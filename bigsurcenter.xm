@@ -12,7 +12,6 @@ ABSManager* bigSurManager;
   [bigSurManager setBigSurSliderController:self];
 }
 
-// TODO: better explain modify auto-brightness setting. "if you do not wish to use auto-brightness at all, toggle this off, respring and then toggle off auto-brightness in accessibility"
 -(void)updateSliderValue {
   bigSurManager.whitePointShouldBeEnabled ? [self setImageForFraction:0.f] : [self setImageForFraction:1.f];
 
@@ -24,12 +23,12 @@ ABSManager* bigSurManager;
   }
   float newConstraintConstant = -width + bigSurManager.currentSliderLevel * width;
   [self.sliderLeadingConstraint setConstant:newConstraintConstant];
+  [self.view setNeedsLayout];
 }
 
 -(void)sliderValueChanged:(UIPanGestureRecognizer*)recognizer {
-  if ([recognizer state] == UIGestureRecognizerStateBegan) {
+  if ([recognizer state] == UIGestureRecognizerStateBegan)
 		oldBigSurSliderLevel = bigSurManager.currentSliderLevel;
-	}
 
   [bigSurManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldBigSurSliderLevel withView:self.sliderView withYDirection:NO];
   [self updateSliderValue];

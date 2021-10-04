@@ -5,7 +5,6 @@
 
 @interface ABSManager : NSObject
 @property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
-@property (readonly,nonatomic) NSString* glyphState; // stores the current state which the brightness glyph has
 @property (readonly,nonatomic) float threshold; // value where slider switches from brightness to white point
 @property (readonly,nonatomic) float distance; // will be set to 1 - threshold
 @property (readonly,nonatomic) BOOL whitePointShouldBeEnabled; // stores whether the white point setting should be enabled (to avoid syscalls)
@@ -21,8 +20,9 @@
 -(float)whitePointLevel;
 -(void)setAutoBrightnessEnabled:(BOOL)enabled;
 -(void)calculateGlyphState;
+-(NSString*)glyphState;
 -(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY;
--(void)setCurrentSliderLevel:(float)brightnessLevel;
+-(void)updateCurrentSliderLevelWithSystemBrightness:(float)brightnessLevel;
 -(void)setNativeSliderView:(CCUIContinuousSliderView*)view;
 -(void)setBigSurSliderController:(SCDisplaySliderModuleViewController*)controller;
 @end

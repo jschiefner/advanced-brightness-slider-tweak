@@ -18,9 +18,8 @@ ABSManager* prysmManager; // reference the shared manager object for the Prysm G
 -(void)move:(UIPanGestureRecognizer*)recognizer {
 	if (![self isBrightnessSlider]) return %orig;
 
-	if ([recognizer state] == UIGestureRecognizerStateBegan) {
+	if ([recognizer state] == UIGestureRecognizerStateBegan)
 		oldPrysmSliderLevel = prysmManager.currentSliderLevel;
-	}
 
 	[prysmManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldPrysmSliderLevel withView:self.view withYDirection:NO]; // ignore return value
 	[self setProgressValue:-prysmManager.currentSliderLevel animated:NO];
@@ -35,7 +34,7 @@ ABSManager* prysmManager; // reference the shared manager object for the Prysm G
 
 	if (arg1 >= 0) { // called by prysm tweak / system, arg1 0..1
 		if (![prysmManager whitePointShouldBeEnabled])
-			[prysmManager setCurrentSliderLevel:arg1];
+			[prysmManager updateCurrentSliderLevelWithSystemBrightness:arg1];
 		%orig(prysmManager.currentSliderLevel, arg2);
 	} else { // called my my tweak, arg1 -1..0
 		%orig(-arg1, arg2);
