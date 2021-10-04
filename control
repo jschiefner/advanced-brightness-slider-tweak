@@ -6,4 +6,4 @@ Description: Tweak to dim the screen even further with the brightness slider in 
 Maintainer: Jonas Schiefner
 Author: Jonas Schiefner
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000)
+Depends: mobilesubstrate (>= 0.9.5000), ws.hbang.common (>= 1.17)
