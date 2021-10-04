@@ -14,6 +14,7 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 	[[ABSManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
 
 	if (NSClassFromString(@"PrysmSliderViewController")) initPrysm();
+	if (NSClassFromString(@"SCDisplaySliderModuleViewController")) initBigSurCenter();
 	initNative();
 }
 

@@ -24,6 +24,7 @@
 -(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY;
 -(void)setCurrentSliderLevel:(float)brightnessLevel;
 -(void)setNativeSliderView:(CCUIContinuousSliderView*)view;
+-(void)setBigSurSliderController:(SCDisplaySliderModuleViewController*)controller;
 @end
 
 #endif // ADVANCED_BRIGHTNESS_SLIDER_MANAGER_H

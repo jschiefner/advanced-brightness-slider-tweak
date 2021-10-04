@@ -30,6 +30,7 @@
   Boolean _shouldModifyAutoBrightness;
   float _halfDistance;
   CCUIContinuousSliderView* _nativeSliderView;
+  SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
 }
@@ -142,6 +143,7 @@
 		[self setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setAutoBrightnessEnabled:NO];
     [_nativeSliderView setValue:-_currentSliderLevel];
+    if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
     return NO;
   }
 }
@@ -152,6 +154,10 @@
 }
 
 -(void)setNativeSliderView:(CCUIContinuousSliderView*)view {
-  _nativeSliderView = view;
+  if (_nativeSliderView == nil) _nativeSliderView = view;
+}
+
+-(void)setBigSurSliderController:(SCDisplaySliderModuleViewController*)controller {
+  if (_bigSurSliderController == nil) _bigSurSliderController = controller;
 }
 @end

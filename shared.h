@@ -4,6 +4,7 @@
 extern "C" {
   void initNative();
   void initPrysm();
+  void initBigSurCenter();
 }
 
 @interface CCUIContinuousSliderView : UIControl
@@ -30,6 +31,15 @@ extern "C" {
 -(void)setProgressValue:(double)arg1 animated:(BOOL)arg2;
 -(void)setPackageOverlayView:(CCUICAPackageView *)arg1;
 -(void)move:(UIPanGestureRecognizer*)recognizer;
+@end
+
+@interface SCDisplaySliderModuleViewController : UIViewController
+@property (nonatomic,retain) UIView * sliderView;
+@property (nonatomic,retain) NSLayoutConstraint * sliderLeadingConstraint;
+@property (nonatomic,retain) UIView * knobView;
+-(void)setImageForFraction:(double)arg1;
+-(void)updateSliderValue;
+-(long long)style; // 0: iOS style, 1: macOS style (with knobView)
 @end
 
 #endif // ADVANCED_BRIGHTNESS_SLIDER_SHARED_H

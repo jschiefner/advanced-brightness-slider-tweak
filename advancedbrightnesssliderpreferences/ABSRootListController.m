@@ -13,6 +13,7 @@
 }
 
 // credits: https://github.com/Muirey03/PowerModule/blob/364b91400152f6c2a319dffe136948dec53f1ad6/Source/RespringButtonController.m#L30-L37
+// see https://github.com/hbang/libcephei/blob/master/HBRespringController.x for possible alternative on how to respring. maybe just use cephei for prefs as well, and use that function from my code
 -(void)respring {
 	pid_t pid;
 	int status;
