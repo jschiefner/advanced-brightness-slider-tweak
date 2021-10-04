@@ -29,7 +29,6 @@
 NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 
 @implementation ABSManager {
-  Boolean _shouldModifyAutoBrightness;
   float _halfDistance;
   int _glyphState;
   CCUIContinuousSliderView* _nativeSliderView;
@@ -54,14 +53,31 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 -(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold {
-  _shouldModifyAutoBrightness = enabled;
+  _modifyAutoBrightness = enabled;
   _iosVersion = iosVersion;
   _threshold = threshold;
   _distance = 1 - threshold;
-  _currentSliderLevel = [self whitePointEnabled] ? (([self whitePointLevel] - 0.25) / 0.75) * _distance + threshold : ([self brightness] * _distance + threshold);
   _halfDistance = (1-threshold) / 2 + threshold;
   if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
+  [self reCalculateCurrentSliderLevel];
   [self calculateGlyphState];
+}
+
+-(void)reCalculateCurrentSliderLevel {
+  if ([self whitePointEnabled]) {
+    _currentSliderLevel = _threshold - (([self whitePointLevel] - 0.25) / 0.75) * _threshold;
+  } else {
+    _currentSliderLevel = [self brightness] * _distance + _threshold;
+  }
+}
+
+-(void)setThreshold:(float)threshold {
+  _threshold = threshold;
+  _distance = 1-threshold;
+  _halfDistance = (1-threshold) / 2 + threshold;
+  [self reCalculateCurrentSliderLevel];
+  [_nativeSliderView setValue:-_currentSliderLevel];
+  if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
 }
 
 -(void)setBrightness:(float)amount {
@@ -98,7 +114,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 -(void)setAutoBrightnessEnabled:(BOOL)enabled {
-  if (!_shouldModifyAutoBrightness) return;
+  if (!_modifyAutoBrightness) return;
   if (enabled && _autoBrightnessShouldBeEnabled) return;
   if (!enabled && !_autoBrightnessShouldBeEnabled) return;
 

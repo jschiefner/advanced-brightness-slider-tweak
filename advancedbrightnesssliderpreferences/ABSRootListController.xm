@@ -1,10 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "ABSRootListController.h"
-#import <spawn.h>
+#import <Cephei/HBRespringController.h>
 
 @implementation ABSRootListController
 
-- (NSArray *)specifiers {
+- (NSArray*)specifiers {
 	if (!_specifiers) {
 		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 	}
@@ -12,14 +12,8 @@
 	return _specifiers;
 }
 
-// credits: https://github.com/Muirey03/PowerModule/blob/364b91400152f6c2a319dffe136948dec53f1ad6/Source/RespringButtonController.m#L30-L37
-// see https://github.com/hbang/libcephei/blob/master/HBRespringController.x for possible alternative on how to respring. maybe just use cephei for prefs as well, and use that function from my code
 -(void)respring {
-	pid_t pid;
-	int status;
-	const char* args[] = {"sbreload", NULL};
-	posix_spawn(&pid, "/usr/bin/sbreload", NULL, NULL, (char* const*)args, NULL);
-	waitpid(pid, &status, WEXITED);
+	[%c(HBRespringController) respring];
 }
 
 -(void)openGithub {

@@ -6,6 +6,12 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>To apply changes made to this setting, you need to Respring your Device. All other settings are applied automatically.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
 			<string>Enabled</string>
@@ -15,6 +21,14 @@
 			<string>com.jschiefner.advancedbrightnesssliderpreferences</string>
 			<key>key</key>
 			<string>enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Respring</string>
+			<key>action</key>
+			<string>respring</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -45,6 +59,8 @@
 			<true/>
 			<key>segmentCount</key>
 			<integer>8</integer>
+			<key>PostNotification</key>
+			<string>com.jschiefner.advancedbrightnesssliderpreferences/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -65,22 +81,8 @@
 			<string>com.jschiefner.advancedbrightnesssliderpreferences</string>
 			<key>key</key>
 			<string>modifyAutoBrightness</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Apply Changes</string>
-			<key>footerText</key>
-			<string>To apply changes made to these settings, you need to Respring your Device.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
-			<key>label</key>
-			<string>Respring</string>
-			<key>action</key>
-			<string>respring</string>
+			<key>PostNotification</key>
+			<string>com.jschiefner.advancedbrightnesssliderpreferences/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>

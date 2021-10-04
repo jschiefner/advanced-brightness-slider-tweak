@@ -5,7 +5,8 @@
 
 @interface ABSManager : NSObject
 @property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
-@property (readonly,nonatomic) float threshold; // value where slider switches from brightness to white point
+@property (nonatomic) float threshold; // value where slider switches from brightness to white point
+@property (nonatomic) BOOL modifyAutoBrightness; // stores whether the user wants the tweak to modify the auto-brightness accessibility setting
 @property (readonly,nonatomic) float distance; // will be set to 1 - threshold
 @property (readonly,nonatomic) BOOL whitePointShouldBeEnabled; // stores whether the white point setting should be enabled (to avoid syscalls)
 @property (readonly,nonatomic) float iosVersion; // stores the major ios version

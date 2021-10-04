@@ -1,21 +1,27 @@
 #import "shared.h"
 #import "ABSManager.h"
+#import <Cephei/HBPreferences.h>
 
 static void didFinishLaunching(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef info) {
-	NSDictionary* bundleDefaults = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"com.jschiefner.advancedbrightnesssliderpreferences"];
-	if (bundleDefaults == nil) bundleDefaults = @{@"enabled":@YES, @"threshold":@30.0f,@"modifyAutoBrightness":@YES};
-	BOOL enabled = [bundleDefaults objectForKey:@"enabled"] == nil ? YES : [[bundleDefaults objectForKey:@"enabled"] boolValue];
-	if (!enabled) return;
+	HBPreferences* preferences = [[HBPreferences alloc] initWithIdentifier:@"com.jschiefner.advancedbrightnesssliderpreferences"];
+	[preferences registerDefaults:@{@"enabled":@YES, @"threshold":@30.0f,@"modifyAutoBrightness":@YES}];
+	if (![preferences boolForKey:@"enabled"]) return;
 
-	BOOL shouldModifyAutoBrightness = [bundleDefaults objectForKey:@"modifyAutoBrightness"] == nil ? YES : [[bundleDefaults objectForKey:@"modifyAutoBrightness"] boolValue];
+	BOOL modifyAutoBrightness = [preferences boolForKey:@"modifyAutoBrightness"];
 	int iosVersion = [[[%c(UIDevice) currentDevice] systemVersion] intValue];
-	// example values in the code assume the threshold to be set to 30%
-	float threshold = [bundleDefaults objectForKey:@"threshold"] == nil ? 0.3f : [[bundleDefaults objectForKey:@"threshold"] floatValue] / 100.0f;
-	[[ABSManager shared] initWithAutoBrightnessEnabled:shouldModifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
+	float threshold = [preferences floatForKey:@"threshold"] / 100.0f;
+	[[ABSManager shared] initWithAutoBrightnessEnabled:modifyAutoBrightness andIosVersion:iosVersion andThreshold:threshold];
 
+	[preferences registerPreferenceChangeBlockForKey:@"threshold" block:^(NSString *key, id<NSCopying> _Nullable value){
+		[[ABSManager shared] setThreshold:[[value copyWithZone:nil] floatValue] / 100.0f];
+	}];
+	[preferences registerPreferenceChangeBlockForKey:@"modifyAutoBrightness" block:^(NSString *key, id<NSCopying> _Nullable value){
+		[ABSManager shared].modifyAutoBrightness = [[value copyWithZone:nil] boolValue];
+	}];
+
+	initNative();
 	if (%c(PrysmSliderViewController)) initPrysm();
 	if (%c(SCDisplaySliderModuleViewController)) initBigSurCenter();
-	initNative();
 }
 
 __attribute__((constructor)) static void initialize() {
