@@ -13,7 +13,7 @@
 }
 
 -(void)respring {
-	[%c(HBRespringController) respring];
+	[HBRespringController respring];
 }
 
 -(void)openGithub {
