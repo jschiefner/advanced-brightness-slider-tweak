@@ -19,7 +19,9 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 		[ABSManager shared].modifyAutoBrightness = [[value copyWithZone:nil] boolValue];
 	}];
 
-	initNative();
+	if (iosVersion >= 13) initNative();
+	else initNativeIOS12();
+
 	if (%c(PrysmSliderViewController)) initPrysm();
 	if (%c(SCDisplaySliderModuleViewController)) initBigSurCenter();
 }

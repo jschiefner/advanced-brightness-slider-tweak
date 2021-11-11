@@ -3,6 +3,7 @@
 
 extern "C" {
   void initNative();
+  void initNativeIOS12();
   void initPrysm();
   void initBigSurCenter();
 }
@@ -12,6 +13,16 @@ extern "C" {
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
 -(void)setGlyphState:(NSString*)arg1;
 -(void)setValue:(float)arg1;
+@end
+
+@interface CCUIModuleSliderView : UIControl
+@property (nonatomic) BOOL isBrightnessSlider;
+-(void)setValue:(float)arg1;
+@end
+
+@interface CCUIDisplayModuleViewController : UIViewController
+@property (nonatomic,retain) CCUIModuleSliderView* sliderView;
+-(void)setGlyphState:(NSString*)arg1;
 @end
 
 @interface CCUICAPackageDescription : NSObject
