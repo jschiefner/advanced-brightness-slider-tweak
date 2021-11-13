@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>To apply changes made to this setting, you need to Respring your Device. All other settings are applied automatically.</string>
+			<string>To apply changes made to this setting, you need to Respring your Device. Settings below are applied automatically.</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -59,28 +59,6 @@
 			<true/>
 			<key>segmentCount</key>
 			<integer>8</integer>
-			<key>PostNotification</key>
-			<string>com.jschiefner.advancedbrightnesssliderpreferences/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Auto-Brightness Handling</string>
-			<key>footerText</key>
-			<string>This changes whether the tweak should modify the Auto-Brightness setting found in Accessibility &gt; Display &amp; Text Size &gt; Auto-Brightness. This is recommended so it is turned on by default. The tweak will then automatically disable Auto-Brightness while it is in white point mode to avoid the device from raising the brightness automatically. Sliding it up to control the brightness again will enable Auto-Brightness. Disabling this feature might cause unexpected behaviour with the slider, the tweak should still work however. If you do not want to use Auto-Brightness at all please disable this setting, respring and then disable Auto-Brightness in the Accessibility Settings.</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>label</key>
-			<string>Modify Auto-Brightness</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.jschiefner.advancedbrightnesssliderpreferences</string>
-			<key>key</key>
-			<string>modifyAutoBrightness</string>
 			<key>PostNotification</key>
 			<string>com.jschiefner.advancedbrightnesssliderpreferences/ReloadPrefs</string>
 		</dict>
