@@ -22,5 +22,5 @@ This tweak hooks into `CCUIContinuousSliderView` provided by `ControlCenterUIKit
 
 ### Credits
  - [@opa334](https://github.com/opa334) who created a similar tweak [WhitePointModule](https://github.com/opa334/WhitePointModule) where I found the [API]() to manipulate the `Reduce White Point intensity`
- - [@rpetrich](https://github.com/rpetrich) who helped made the [FlipSwitch](https://github.com/a3tweaks/Flipswitch) library where i found the API to manipulate the `Auto Brightnes` Setting.
+ - [@rpetrich](https://github.com/rpetrich) who helped made the [FlipSwitch](https://github.com/a3tweaks/Flipswitch) library where i found the API to manipulate the `Auto Brightness` Setting.
  - [@zaneh](https://github.com/zaneh) who made a great [Video Series](https://www.youtube.com/playlist?list=PLFWEDfSyl7h_K8Ew4rwTzlUPgWU7nKYri) on developing iOS Tweaks.
