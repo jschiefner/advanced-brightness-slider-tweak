@@ -1,9 +1,6 @@
 #import "ABSManager.h"
 #import "ReduceWhitePointLevel.h"
 
-#define kABSBackboard CFSTR("com.apple.backboardd")
-#define kABSAutoBrightnessKey CFSTR("BKEnableALS")
-
 @interface UIDevice (Category)
 @property float _backlightLevel;
 @end
@@ -53,8 +50,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 	else return value;
 }
 
--(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold {
-  _modifyAutoBrightness = enabled;
+-(void)initWithAutoBrightnessEnabled:(BOOL)modifyAutoBrightness andIosVersion:(int)iosVersion andThreshold:(float)threshold {
+  _modifyAutoBrightness = modifyAutoBrightness;
   _iosVersion = iosVersion;
   _threshold = threshold;
   _distance = 1 - threshold;

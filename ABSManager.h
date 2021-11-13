@@ -3,6 +3,9 @@
 
 #import "shared.h"
 
+#define kABSBackboard CFSTR("com.apple.backboardd")
+#define kABSAutoBrightnessKey CFSTR("BKEnableALS")
+
 @interface ABSManager : NSObject
 @property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
 @property (nonatomic) float threshold; // value where slider switches from brightness to white point
@@ -12,7 +15,7 @@
 @property (readonly,nonatomic) float iosVersion; // stores the major ios version
 +(ABSManager*)shared;
 +(float)clampZeroOne:(float)value;
--(void)initWithAutoBrightnessEnabled:(BOOL)enabled andIosVersion:(int)iosVersion andThreshold:(float)threshold;
+-(void)initWithAutoBrightnessEnabled:(BOOL)modifyAutoBrightness andIosVersion:(int)iosVersion andThreshold:(float)threshold;
 -(void)setBrightness:(float)amount;
 -(float)brightness;
 -(BOOL)whitePointEnabled;
