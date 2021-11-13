@@ -8,6 +8,10 @@ extern "C" {
   void initBigSurCenter();
 }
 
+@interface BKSLocalDefaults
+-(BOOL)isALSEnabled;
+@end
+
 @interface CCUIContinuousSliderView : UIControl
 @property (nonatomic) BOOL isBrightnessSlider;
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
