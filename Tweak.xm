@@ -61,7 +61,3 @@ static void autoBrightnessChanged(CFNotificationCenterRef center, void *observer
 		CFNotificationSuspensionBehaviorDeliverImmediately
 	);
 }
-
-%ctor {
-
-}
