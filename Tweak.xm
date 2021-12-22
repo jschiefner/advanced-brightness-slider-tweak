@@ -26,9 +26,7 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 		[[ABSManager shared] setThreshold:[[value copyWithZone:nil] floatValue] / 100.0f];
 	}];
 
-	if (iosVersion >= 13) initNative();
-	else initNativeIOS12();
-
+	initNative();
 	if (%c(PrysmSliderViewController)) initPrysm();
 	if (%c(SCDisplaySliderModuleViewController)) initBigSurCenter();
 }
