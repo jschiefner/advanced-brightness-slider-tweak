@@ -5,7 +5,6 @@
 
 extern "C" {
   void initNative();
-  void initNativeIOS12();
   void initPrysm();
   void initBigSurCenter();
 }
