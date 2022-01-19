@@ -29,6 +29,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   float _halfDistance;
   int _glyphState;
   CCUIContinuousSliderView* _nativeSliderView;
+  CCUIModuleSliderView* _nativeIOS12SliderView;
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
@@ -74,7 +75,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _halfDistance = (1-threshold) / 2 + threshold;
   [self reCalculateCurrentSliderLevel];
 
-  [_nativeSliderView setValue:-_currentSliderLevel];
+  if (_iosVersion >= 13) [_nativeSliderView setValue:-_currentSliderLevel];
+  else [_nativeIOS12SliderView setValue:-_currentSliderLevel];
 
   if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
 }
@@ -156,7 +158,9 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
     [self setBrightness:newBrightnessLevel];
     [self setAutoBrightnessEnabled:YES];
 
-    [_nativeSliderView setValue:-_currentSliderLevel];
+    if (_iosVersion == 13) [_nativeSliderView setValue:-_currentSliderLevel];
+    else if (_iosVersion < 13) [_nativeIOS12SliderView setValue:_currentSliderLevel];
+
     return YES;
   } else { // whitepoint
     float lowerSectionSliderLevel = _currentSliderLevel; // 0..0.3
@@ -166,7 +170,9 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 		[self setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setAutoBrightnessEnabled:NO];
 
-    [_nativeSliderView setValue:-_currentSliderLevel];
+    if (_iosVersion >= 13) [_nativeSliderView setValue:-_currentSliderLevel];
+    else [_nativeIOS12SliderView setValue:_currentSliderLevel];
+
     if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
     return NO;
   }
@@ -179,6 +185,10 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 
 -(void)setNativeSliderView:(CCUIContinuousSliderView*)view {
   if (_nativeSliderView == nil) _nativeSliderView = view;
+}
+
+-(void)setNativeIOS12SliderView:(CCUIModuleSliderView*)view {
+  if (_nativeIOS12SliderView == nil) _nativeIOS12SliderView = view;
 }
 
 -(void)setBigSurSliderController:(SCDisplaySliderModuleViewController*)controller {
