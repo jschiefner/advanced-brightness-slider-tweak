@@ -1,12 +1,12 @@
 ARCHS=arm64 arm64e
-TARGET := iphone:clang:latest:14.0
+TARGET := iphone:clang:14.5:14.5
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = AdvancedBrightnessSlider
-AdvancedBrightnessSlider_FRAMEWORKS = UIKit MediaAccessibility Preferences
-AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
+AdvancedBrightnessSlider_FRAMEWORKS = UIKit MediaAccessibility
+AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities Preferences
 AdvancedBrightnessSlider_EXTRA_FRAMEWORKS += Cephei
 
 AdvancedBrightnessSlider_FILES = $(wildcard *.x *.xm)
