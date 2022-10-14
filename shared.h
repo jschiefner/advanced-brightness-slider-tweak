@@ -1,6 +1,8 @@
 #ifndef ADVANCED_BRIGHTNESS_SLIDER_SHARED_H
 #define ADVANCED_BRIGHTNESS_SLIDER_SHARED_H
 
+#import <UIKit/UIKit.h>
+
 extern "C" {
   void initNative();
   void initNativeIOS12();
