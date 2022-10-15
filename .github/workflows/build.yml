@@ -23,7 +23,7 @@ jobs:
           key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
 
       - name: Setup Theos
-        uses: ./.github/actions/setup-theos
+        uses: Randomblock1/theos-action@b9611b812b850dde35c730879db78254e30af488
 
       - name: Build package
         run: |
