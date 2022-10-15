@@ -40,7 +40,7 @@ runs:
     - name: get sdks
       shell: bash
       run: |
-        if [[ "$(ls {{ github.workspace }}/${{ inputs.theos-dir }}/sdks)" ]]; then
+        if [[ "$(ls ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks)" ]]; then
           cd ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks
           curl -sLO ${{ inputs.theos-sdks }}/archive/master.zip
           TMP=$(mktemp -d)
