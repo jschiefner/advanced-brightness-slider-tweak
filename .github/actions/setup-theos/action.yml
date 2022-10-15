@@ -58,5 +58,7 @@ runs:
           mv $TMP/*-master/*.sdk $THEOS/sdks
           rm -r master.zip $TMP
         else
+          echo $(ls)
+          echo $(ls theos/sdks/)
           echo "Theos SDKs already cached, skipping..."
         fi
