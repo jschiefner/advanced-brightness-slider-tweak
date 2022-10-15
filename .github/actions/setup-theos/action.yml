@@ -31,10 +31,10 @@ runs:
     - name: print inputs
       shell: bash
       run: |
-        echo $THEOS
-        echo $GITHUB_WORKSPACE
-        echo {{ github.workspace }}
-        echo {{ inputs.theos-dir }}
+        echo "$THEOS"
+        echo "$GITHUB_WORKSPACE"
+        echo "${{ github.workspace }}"
+        echo "${{ inputs.theos-dir }}"
     - name: get theos
       shell: bash
       run: |
