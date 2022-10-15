@@ -35,6 +35,9 @@ runs:
         echo "$GITHUB_WORKSPACE"
         echo "${{ github.workspace }}"
         echo "${{ inputs.theos-dir }}"
+        echo $(pwd)
+        echo $(ls)
+        echo $(ls advanced-brightness-slider-tweak)
     - name: get theos
       shell: bash
       run: |
