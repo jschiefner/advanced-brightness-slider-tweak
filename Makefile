@@ -4,9 +4,6 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
-SDK_PATH = $(THEOS)/sdks/iPhoneOS14.5.sdk/
-SYSROOT = $(SDK_PATH)
-
 TWEAK_NAME = AdvancedBrightnessSlider
 AdvancedBrightnessSlider_FRAMEWORKS = UIKit MediaAccessibility
 AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities Preferences

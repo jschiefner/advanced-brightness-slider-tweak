@@ -28,16 +28,6 @@ runs:
         echo "THEOS=$GITHUB_WORKSPACE/${{ inputs.theos-dir }}" >> $GITHUB_ENV
         PATH="/usr/local/opt/make/libexec/gnubin:$PATH" >> $GITHUB_ENV
         echo "Succesfully installed tools!"
-    - name: print inputs
-      shell: bash
-      run: |
-        echo "$THEOS"
-        echo "$GITHUB_WORKSPACE"
-        echo "${{ github.workspace }}"
-        echo "${{ inputs.theos-dir }}"
-        echo $(pwd)
-        echo $(ls)
-        echo $(ls advanced-brightness-slider-tweak)
     - name: get theos
       shell: bash
       run: |
@@ -51,10 +41,6 @@ runs:
       shell: bash
       run: |
         if [[ "$(ls ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks)" ]]; then
-          echo $(ls)
-          echo ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks
-          echo $(ls ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks)
-          echo $(ls theos/sdks/)
           echo "Theos SDKs already cached, skipping..."
         else
           cd ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks

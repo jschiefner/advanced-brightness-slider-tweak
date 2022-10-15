@@ -3,9 +3,6 @@ TARGET := iphone:clang:latest:14.5
 
 include $(THEOS)/makefiles/common.mk
 
-SDK_PATH = $(THEOS)/sdks/iPhoneOS14.5.sdk/
-SYSROOT = $(SDK_PATH)
-
 BUNDLE_NAME = AdvancedBrightnessSliderPreferences
 
 AdvancedBrightnessSliderPreferences_FILES = ABSRootListController.xm
