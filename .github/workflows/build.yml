@@ -22,8 +22,8 @@ jobs:
       #     path: ${{ github.workspace }}/theos
       #     key: ${{ runner.os }}-${{ steps.verify-cache.outputs.heads }}
 
-      - name: Prepare Theos
-        uses: Randomblock1/theos-action@v1
+      - name: Setup Theos
+        uses: ./.github/actions/setup-theos
 
       - name: Build package
         run: |
