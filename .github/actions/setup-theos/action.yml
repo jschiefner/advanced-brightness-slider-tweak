@@ -40,9 +40,13 @@ runs:
     - name: get sdks
       shell: bash
       run: |
-        cd ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks
-        curl -sLO ${{ inputs.theos-sdks }}/archive/master.zip
-        TMP=$(mktemp -d)
-        7z x master.zip -o$TMP
-        mv $TMP/*-master/*.sdk $THEOS/sdks
-        rm -r master.zip $TMP
+        if [[ "$(ls {{ github.workspace }}/${{ inputs.theos-dir }}/sdks)" ]]; then
+          cd ${{ github.workspace }}/${{ inputs.theos-dir }}/sdks
+          curl -sLO ${{ inputs.theos-sdks }}/archive/master.zip
+          TMP=$(mktemp -d)
+          7z x master.zip -o$TMP
+          mv $TMP/*-master/*.sdk $THEOS/sdks
+          rm -r master.zip $TMP
+        else
+          echo "Theos SDKs already cached, skipping..."
+        fi
