@@ -28,6 +28,13 @@ runs:
         echo "THEOS=$GITHUB_WORKSPACE/${{ inputs.theos-dir }}" >> $GITHUB_ENV
         PATH="/usr/local/opt/make/libexec/gnubin:$PATH" >> $GITHUB_ENV
         echo "Succesfully installed tools!"
+    - name: print inputs
+      shell: bash
+      run: |
+        echo $THEOS
+        echo $GITHUB_WORKSPACE
+        echo {{ github.workspace }}
+        echo {{ inputs.theos-dir }}
     - name: get theos
       shell: bash
       run: |
