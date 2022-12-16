@@ -31,6 +31,8 @@ static void didFinishLaunching(CFNotificationCenterRef center, void *observer, C
 
 	if (%c(PrysmSliderViewController)) initPrysm();
 	if (%c(SCDisplaySliderModuleViewController)) initBigSurCenter();
+
+	initAutoBrightnessButton();
 }
 
 static void autoBrightnessChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {

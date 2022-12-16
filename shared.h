@@ -8,6 +8,7 @@ extern "C" {
   void initNativeIOS12();
   void initPrysm();
   void initBigSurCenter();
+  void initAutoBrightnessButton();
 }
 
 @interface BKSLocalDefaults

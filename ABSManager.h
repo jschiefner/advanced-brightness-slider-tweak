@@ -7,6 +7,9 @@
 #define kABSAutoBrightnessKey CFSTR("BKEnableALS")
 
 @interface ABSManager : NSObject
+// debug
+@property (nonatomic) id trueToneButton;
+
 @property (nonatomic) float currentSliderLevel; // stores the current level the brightness slider is set to
 @property (nonatomic) float threshold; // value where slider switches from brightness to white point
 @property (nonatomic) BOOL modifyAutoBrightness; // stores whether the user wants the tweak to modify the auto-brightness accessibility setting
