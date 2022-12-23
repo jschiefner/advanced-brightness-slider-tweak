@@ -5,9 +5,10 @@
 @property float _backlightLevel;
 @end
 
-// used in iOS 14
+// used in iOS 14+
 @interface SBDisplayBrightnessController : NSObject
 -(void)setBrightnessLevel:(float)arg1;
+-(void)setBrightnessLevel:(float)arg1 animated:(BOOL)animated; // iOS 15+
 @end
 
 // used in iOS 13
@@ -82,7 +83,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 -(void)setBrightness:(float)amount {
-  if (_iosVersion >= 14) [_brightnessController setBrightnessLevel:amount];
+  if (_iosVersion >= 15) [_brightnessController setBrightnessLevel:amount animated:NO];
+  else if (_iosVersion >= 14) [_brightnessController setBrightnessLevel:amount];
   else [[%c(SBBrightnessController) sharedBrightnessController] setBrightnessLevel:amount];
 }
 
