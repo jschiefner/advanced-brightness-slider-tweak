@@ -14,9 +14,10 @@ This is an iOS Tweak that modifies the brightness slider in the Control Center. 
 
 ### Support
 
-Supports iOS 13, 14 & 15, as well as:
- - Prysm (Control Center alternative available on [Havoc](https://havoc.app/package/prysm)), tested with version 1.9.1
- - BigSurCenter (Control Center alternative available on [Havoc](https://havoc.app/package/bigsurcenter)), tested with version 1.2.1
+  - iOS: 13, 14, 15 & 16
+  - Rootful & rootless jailbreaks
+  - Prysm (Control Center alternative available on [Havoc](https://havoc.app/package/prysm)), tested with version 1.9.1
+  - BigSurCenter (Control Center alternative available on [Havoc](https://havoc.app/package/bigsurcenter)), tested with version 1.2.1
 
 ### How it works
 
