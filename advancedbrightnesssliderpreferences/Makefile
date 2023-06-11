@@ -10,6 +10,6 @@ AdvancedBrightnessSliderPreferences_FRAMEWORKS = UIKit
 AdvancedBrightnessSliderPreferences_PRIVATE_FRAMEWORKS = Preferences
 AdvancedBrightnessSliderPreferences_EXTRA_FRAMEWORKS += Cephei
 AdvancedBrightnessSliderPreferences_INSTALL_PATH = /Library/PreferenceBundles
-AdvancedBrightnessSliderPreferences_CFLAGS = -fobjc-arc
+AdvancedBrightnessSliderPreferences_CFLAGS = -fobjc-arc -Wno-c++11-extensions
 
 include $(THEOS_MAKE_PATH)/bundle.mk
