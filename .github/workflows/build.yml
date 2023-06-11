@@ -25,12 +25,19 @@ jobs:
       - name: Setup Theos
         uses: Randomblock1/theos-action@v1.1
 
-      - name: Build package
+      - name: Build packages
         run: |
+          version=$(sed -n 's/^Version: //p' control)
+          mkdir finalpackages
           rm -f packages/*
           make package FINALPACKAGE=1
-      - name: Upload package
+          mv packages/*.deb finalpackages/com.jschiefner.advancedbrightnessslider_${version}_rootful.deb
+          make clean
+          make package THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1
+          mv packages/*.deb finalpackages/com.jschiefner.advancedbrightnessslider_${version}_rootless.deb
+
+      - name: Upload packages
         uses: actions/upload-artifact@v3
         with:
           name: 'Package'
-          path: ${{ github.workspace }}/packages/*.deb
+          path: ${{ github.workspace }}/finalpackages/*.deb
