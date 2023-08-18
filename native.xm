@@ -7,6 +7,7 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 
 %group Native
 
+// iOS 13+
 %hook CCUIContinuousSliderView
 %property (nonatomic) BOOL isBrightnessSlider;
 
@@ -47,17 +48,60 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 
 %end
 
+// iOS 12
+%hook CCUIModuleSliderView
+%property (nonatomic) BOOL isBrightnessSlider;
+
+// method setGlyphPackageDescription doesn't work properly on iOS 12
+-(void)layoutSubviews {
+	%orig;
+	self.isBrightnessSlider = [[[[self glyphPackageDescription] packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
+	if (self.isBrightnessSlider) [nativeManager setNativeSliderViewOld:self];
+}
+
+-(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
+	if (!self.isBrightnessSlider) return %orig;
+
+	if ([recognizer state] == UIGestureRecognizerStateBegan)
+		oldNativeSliderLevel = nativeManager.currentSliderLevel;
+
+	BOOL inBrightnessSection = [nativeManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldNativeSliderLevel withView:self withYDirection:YES];
+	if (!inBrightnessSection || nativeManager.iosVersion < 14) {
+		[self setGlyphState:nil]; // argument is ignored
+		if (brightnessTopGlyphPackageView != nil) [brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
+	}
+}
+
+-(void)setValue:(float)arg1 {
+	if(!self.isBrightnessSlider) return %orig;
+
+	if (arg1 >= 0) { // brightness, arg1 = system brightness 0..1
+		if (![nativeManager whitePointShouldBeEnabled])
+			[nativeManager updateCurrentSliderLevelWithSystemBrightness:arg1];
+		%orig(nativeManager.currentSliderLevel);
+	} else { // whitepoint arg1 = currentSliderLevel -0..1
+		%orig(-arg1);
+	}
+}
+
+-(void)setGlyphState:(NSString*)arg1 {
+	self.isBrightnessSlider ? %orig(nativeManager.glyphState) : %orig;
+}
+
+%end
+
 %hook CCUICAPackageView
 
--(void)setPackageDescription:(CCUICAPackageDescription*)arg1 {
+// method setPackageDescription doesn't work properly on iOS 12 (hopefully on iOS 13+ too)
+-(void)layoutSubviews {
 	%orig;
-	BOOL isBrightnessPackage = [[[arg1 packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
+	BOOL isBrightnessPackage = [[[[self packageDescription] packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
 	BOOL isTop = [[[self nextResponder] nextResponder] isKindOfClass:[%c(CCUIDisplayBackgroundViewController) class]];
 	if (isBrightnessPackage && isTop) brightnessTopGlyphPackageView = self;
 }
 
 -(void)setStateName:(NSString*)arg1 {
-	self == brightnessTopGlyphPackageView ? %orig(nativeManager.glyphState) :	%orig;
+	self == brightnessTopGlyphPackageView ? %orig(nativeManager.glyphState) : %orig;
 }
 
 %end
