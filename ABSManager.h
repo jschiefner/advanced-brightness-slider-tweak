@@ -27,8 +27,8 @@
 -(NSString*)glyphState;
 -(BOOL)moveWithGestureRecognizer:(UIPanGestureRecognizer*)recognizer withOldSliderLevel:(float)oldSliderLevel withView:(UIView*)view withYDirection:(BOOL)isY;
 -(void)updateCurrentSliderLevelWithSystemBrightness:(float)brightnessLevel;
--(void)setNativeSliderView:(CCUIContinuousSliderView*)view; // iOS 13+
--(void)setNativeSliderViewOld:(CCUIModuleSliderView*)view; // iOS 12
+-(void)setNativeSliderView:(CCUIContinuousSliderView*)view;
+-(void)setNativeIOS12SliderView:(CCUIModuleSliderView*)view;
 -(void)setBigSurSliderController:(SCDisplaySliderModuleViewController*)controller;
 @end
 
