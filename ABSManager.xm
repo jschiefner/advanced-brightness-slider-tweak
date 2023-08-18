@@ -5,18 +5,6 @@
 @property float _backlightLevel;
 @end
 
-// used in iOS 14+
-@interface SBDisplayBrightnessController : NSObject
--(void)setBrightnessLevel:(float)arg1;
--(void)setBrightnessLevel:(float)arg1 animated:(BOOL)animated; // iOS 15+
-@end
-
-// used in iOS 13
-@interface SBBrightnessController
-+(id)sharedBrightnessController;
--(void)setBrightnessLevel:(float)arg1;
-@end
-
 @interface AXSettings
 +(id)sharedInstance;
 -(BOOL)reduceWhitePointEnabled;
@@ -29,7 +17,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 @implementation ABSManager {
   float _halfDistance;
   int _glyphState;
-  CCUIContinuousSliderView* _nativeSliderView;
+  CCUIContinuousSliderView* _nativeSliderView; // iOS 13+
+  CCUIModuleSliderView* _nativeSliderViewOld; // iOS 12
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
@@ -75,15 +64,15 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _halfDistance = (1-threshold) / 2 + threshold;
   [self reCalculateCurrentSliderLevel];
 
-  [_nativeSliderView setValue:-_currentSliderLevel];
+  (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
 
   if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
 }
 
 -(void)setBrightness:(float)amount {
-  if (_iosVersion >= 15) [_brightnessController setBrightnessLevel:amount animated:NO];
-  else if (_iosVersion >= 14) [_brightnessController setBrightnessLevel:amount];
-  else [[%c(SBBrightnessController) sharedBrightnessController] setBrightnessLevel:amount];
+    // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120   
+    // This method will make the brightness transition smoother
+    BKSDisplayBrightnessSet(amount, 1);
 }
 
 -(float)brightness {
@@ -158,7 +147,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
     [self setBrightness:newBrightnessLevel];
     [self setAutoBrightnessEnabled:YES];
 
-    [_nativeSliderView setValue:-_currentSliderLevel];
+    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
     return YES;
   } else { // whitepoint
     float lowerSectionSliderLevel = _currentSliderLevel; // 0..0.3
@@ -168,7 +157,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 		[self setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setAutoBrightnessEnabled:NO];
 
-    [_nativeSliderView setValue:-_currentSliderLevel];
+    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
     if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
     return NO;
   }
@@ -179,6 +168,12 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _currentSliderLevel = brightnessLevel * _distance + _threshold; // 1..0.3
 }
 
+// iOS 12
+-(void)setNativeSliderViewOld:(CCUIModuleSliderView*)view {
+  if (_nativeSliderViewOld == nil) _nativeSliderViewOld = view;
+}
+
+// iOS 13+
 -(void)setNativeSliderView:(CCUIContinuousSliderView*)view {
   if (_nativeSliderView == nil) _nativeSliderView = view;
 }
