@@ -70,9 +70,9 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 -(void)setBrightness:(float)amount {
-    // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120   
-    // This method will make the brightness transition smoother
-    BKSDisplayBrightnessSet(amount, 1);
+  // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120   
+  // This method will make the brightness transition smoother
+  BKSDisplayBrightnessSet(amount, 1);
 }
 
 -(float)brightness {
