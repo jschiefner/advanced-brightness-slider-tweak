@@ -6,7 +6,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = AdvancedBrightnessSlider
 AdvancedBrightnessSlider_FRAMEWORKS = UIKit MediaAccessibility
-AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities
+AdvancedBrightnessSlider_PRIVATE_FRAMEWORKS = ControlCenterUIKit AccessibilityUtilities BackBoardServices
 AdvancedBrightnessSlider_EXTRA_FRAMEWORKS += Cephei
 
 AdvancedBrightnessSlider_FILES = $(wildcard *.x *.xm)
