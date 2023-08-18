@@ -92,7 +92,7 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 
 %hook CCUICAPackageView
 
-// method setPackageDescription doesn't work properly on iOS 12 (hopefully on iOS 13+ too)
+// method setPackageDescription doesn't work properly on iOS 12 (hope it works on iOS 13+)
 -(void)layoutSubviews {
 	%orig;
 	BOOL isBrightnessPackage = [[[[self packageDescription] packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
