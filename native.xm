@@ -56,7 +56,7 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 -(void)layoutSubviews {
 	%orig;
 	self.isBrightnessSlider = [[[[self glyphPackageDescription] packageURL] absoluteString] isEqual:@"file:///System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/"];
-	if (self.isBrightnessSlider) [nativeManager setNativeSliderViewOld:self];
+	if (self.isBrightnessSlider) [nativeManager setNativeIOS12SliderView:self];
 }
 
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
