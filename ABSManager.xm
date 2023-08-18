@@ -17,8 +17,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 @implementation ABSManager {
   float _halfDistance;
   int _glyphState;
-  CCUIContinuousSliderView* _nativeSliderView; // iOS 13+
-  CCUIModuleSliderView* _nativeSliderViewOld; // iOS 12
+  CCUIContinuousSliderView* _nativeSliderView;
+  CCUIModuleSliderView* _nativeIOS12SliderView;
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
   SBDisplayBrightnessController* _brightnessController;
@@ -64,7 +64,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _halfDistance = (1-threshold) / 2 + threshold;
   [self reCalculateCurrentSliderLevel];
 
-  (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
+  (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
 
   if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
 }
@@ -147,7 +147,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
     [self setBrightness:newBrightnessLevel];
     [self setAutoBrightnessEnabled:YES];
 
-    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
+    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
     return YES;
   } else { // whitepoint
     float lowerSectionSliderLevel = _currentSliderLevel; // 0..0.3
@@ -157,7 +157,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 		[self setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setAutoBrightnessEnabled:NO];
 
-    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeSliderViewOld setValue:-_currentSliderLevel];
+    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
     if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
     return NO;
   }
@@ -169,8 +169,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 // iOS 12
--(void)setNativeSliderViewOld:(CCUIModuleSliderView*)view {
-  if (_nativeSliderViewOld == nil) _nativeSliderViewOld = view;
+-(void)setNativeIOS12SliderView:(CCUIModuleSliderView*)view {
+  if (_nativeIOS12SliderView == nil) _nativeIOS12SliderView = view;
 }
 
 // iOS 13+
