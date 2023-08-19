@@ -14,7 +14,6 @@ extern "C" {
 @end
 
 @interface CCUICAPackageDescription : NSObject
--(void)setPackageDescription:(CCUICAPackageDescription *)arg1;
 -(NSURL *)packageURL;
 @end
 
@@ -26,7 +25,6 @@ extern "C" {
 @end
 
 @interface CCUIModuleSliderView : UIControl // iOS 12
-@property (nonatomic) BOOL isBrightnessSlider;
 @property (nonatomic,retain) CCUICAPackageDescription* glyphPackageDescription;  
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
 -(void)setGlyphState:(NSString*)arg1;
@@ -38,7 +36,9 @@ extern "C" {
 -(void)setGlyphState:(NSString*)arg1;
 @end
 
-@interface CCUICAPackageView : UIView
+@interface CCUICAPackageView : UIView {
+  BOOL isBrightnessPackage;
+}
 @property CCUICAPackageDescription* packageDescription;
 -(void)setPackageDescription:(CCUICAPackageDescription*)arg1;
 -(void)setStateName:(NSString*)arg1;
