@@ -64,13 +64,13 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _halfDistance = (1-threshold) / 2 + threshold;
   [self reCalculateCurrentSliderLevel];
 
-  (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
+  _iosVersion >= 13 ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
 
   if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
 }
 
 -(void)setBrightness:(float)amount {
-  // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120   
+  // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120
   // this method will make the brightness transition smoother
   BKSDisplayBrightnessSet(amount, 1);
 }
@@ -147,7 +147,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
     [self setBrightness:newBrightnessLevel];
     [self setAutoBrightnessEnabled:YES];
 
-    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
+    _iosVersion >= 13 ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
     return YES;
   } else { // whitepoint
     float lowerSectionSliderLevel = _currentSliderLevel; // 0..0.3
@@ -157,7 +157,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 		[self setWhitePointLevel:newAdjustedWhitePointLevel];
 		[self setAutoBrightnessEnabled:NO];
 
-    (_iosVersion >= 13) ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
+    _iosVersion >= 13 ? [_nativeSliderView setValue:-_currentSliderLevel] : [_nativeIOS12SliderView setValue:-_currentSliderLevel];
     if (_bigSurSliderController != nil) [_bigSurSliderController updateSliderValue];
     return NO;
   }
