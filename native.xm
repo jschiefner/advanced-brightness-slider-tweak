@@ -53,7 +53,9 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 %hook CCUIModuleSliderView
 
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
-	if ([[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound) return %orig;	
+	if (nativeManager.iosVersion >= 13 || [[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound) 
+		return %orig;
+
 	[nativeManager setNativeIOS12SliderView:self];
 
 	if ([recognizer state] == UIGestureRecognizerStateBegan)
@@ -67,7 +69,8 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 }
 
 -(void)setValue:(float)arg1 {
-	if ([[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound) return %orig;
+	if (nativeManager.iosVersion >= 13 || [[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound)
+		return %orig;
 
 	if (arg1 >= 0) { // brightness, arg1 = system brightness 0..1
 		if (![nativeManager whitePointShouldBeEnabled])
@@ -79,7 +82,9 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 }
 
 -(void)setGlyphState:(NSString*)arg1 {
-	if ([[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound) return %orig;
+	if (nativeManager.iosVersion >= 13 || [[[[self glyphPackageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location == NSNotFound)
+		return %orig;
+		
 	%orig(nativeManager.glyphState); 
 }
 
