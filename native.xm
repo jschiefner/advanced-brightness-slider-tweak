@@ -49,7 +49,6 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 %end
 
 // iOS 12
-// assigning check if module is brightness or not to a variable causes things to break, still wondering why
 %hook CCUIModuleSliderView
 
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
