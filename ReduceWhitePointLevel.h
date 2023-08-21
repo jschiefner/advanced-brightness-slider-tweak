@@ -5,7 +5,8 @@ extern "C" {
 void MADisplayFilterPrefSetReduceWhitePointIntensity(CGFloat intenity);
 CGFloat MADisplayFilterPrefGetReduceWhitePointIntensity();
 
-// function to change brightness
+typedef struct BKSDisplayBrightnessTransaction *BKSDisplayBrightnessTransactionRef;
+BKSDisplayBrightnessTransactionRef BKSDisplayBrightnessTransactionCreate(CFAllocatorRef allocator);
 void BKSDisplayBrightnessSet(float amount, int _unknown);
 
 #if defined __cplusplus
