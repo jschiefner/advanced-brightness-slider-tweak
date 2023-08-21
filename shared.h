@@ -13,10 +13,6 @@ extern "C" {
 -(BOOL)isALSEnabled;
 @end
 
-@interface CCUICAPackageDescription : NSObject
--(NSURL *)packageURL;
-@end
-
 @interface CCUIContinuousSliderView : UIControl // iOS 13+
 @property (nonatomic) BOOL isBrightnessSlider;
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
@@ -25,15 +21,13 @@ extern "C" {
 @end
 
 @interface CCUIModuleSliderView : UIControl // iOS 12
-@property (nonatomic,retain) CCUICAPackageDescription* glyphPackageDescription;
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
 -(void)setGlyphState:(NSString*)arg1;
 -(void)setValue:(float)arg1;
 @end
 
-@interface CCUIDisplayModuleViewController : UIViewController
-@property (nonatomic,retain) CCUIModuleSliderView* sliderView;
--(void)setGlyphState:(NSString*)arg1;
+@interface CCUICAPackageDescription : NSObject
+-(NSURL *)packageURL;
 @end
 
 @interface CCUICAPackageView : UIView
