@@ -36,9 +36,7 @@ extern "C" {
 -(void)setGlyphState:(NSString*)arg1;
 @end
 
-@interface CCUICAPackageView : UIView {
-  BOOL isBrightnessPackage;
-}
+@interface CCUICAPackageView : UIView
 @property CCUICAPackageDescription* packageDescription;
 -(void)setPackageDescription:(CCUICAPackageDescription*)arg1;
 -(void)setStateName:(NSString*)arg1;
