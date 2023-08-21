@@ -21,7 +21,7 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   CCUIModuleSliderView* _nativeIOS12SliderView;
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
-  SBDisplayBrightnessController* _brightnessController;
+  BKSDisplayBrightnessTransactionRef _brightnessTransaction;
 }
 
 +(ABSManager*)shared {
@@ -45,7 +45,6 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   _threshold = threshold;
   _distance = 1 - threshold;
   _halfDistance = (1-threshold) / 2 + threshold;
-  if (iosVersion >= 14) _brightnessController = [%c(SBDisplayBrightnessController) new];
   [self reCalculateCurrentSliderLevel];
   [self calculateGlyphState];
 }
@@ -70,9 +69,13 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 }
 
 -(void)setBrightness:(float)amount {
-  // credits: https://github.com/julioverne/BlightAlert/blob/25294cf0013d0ba3b0ce73ba06ca80724fea1ece/blightalerthook/BLightAlert.xm#L120
-  // this method will make the brightness transition smoother
+  // credits: https://github.com/davidmurray/ios-reversed-headers/blob/master/BackBoardServices/BackBoardServices.h
+  // this method makes the brightness transition smoother and won't be overwritten after respring
+	_brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
+
   BKSDisplayBrightnessSet(amount, 1);
+
+  CFRelease(_brightnessTransaction);
 }
 
 -(float)brightness {
