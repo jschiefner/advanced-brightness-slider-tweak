@@ -25,7 +25,7 @@ extern "C" {
 @end
 
 @interface CCUIModuleSliderView : UIControl // iOS 12
-@property (nonatomic,retain) CCUICAPackageDescription* glyphPackageDescription;  
+@property (nonatomic,retain) CCUICAPackageDescription* glyphPackageDescription;
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer*)recognizer;
 -(void)setGlyphState:(NSString*)arg1;
 -(void)setValue:(float)arg1;
