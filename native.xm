@@ -90,21 +90,12 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 %end
 
 %hook CCUICAPackageView
-BOOL isBrightnessPackage;
-
-// this method doesn't work on iOS 12
--(void)setPackageDescription:(CCUICAPackageDescription*)arg1 {
-	%orig;
-	isBrightnessPackage = [[[arg1 packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location != NSNotFound;
-}
 
 -(void)setStateName:(NSString*)arg1 {
-	if (nativeManager.iosVersion < 13)
-		isBrightnessPackage = [[[[self packageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location != NSNotFound;
-
+	BOOL isBrightnessPackage = [[[[self packageDescription] packageURL] absoluteString] rangeOfString:@"Brightness.ca"].location != NSNotFound;
 	BOOL isTop = [[[self nextResponder] nextResponder] isKindOfClass:[%c(CCUIDisplayBackgroundViewController) class]];
-	if (isBrightnessPackage && isTop) brightnessTopGlyphPackageView = self;
 
+	if (isBrightnessPackage && isTop) brightnessTopGlyphPackageView = self;
 	self == brightnessTopGlyphPackageView ? %orig(nativeManager.glyphState) : %orig;
 }
 
