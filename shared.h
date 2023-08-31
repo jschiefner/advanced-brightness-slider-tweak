@@ -32,7 +32,6 @@ extern "C" {
 
 @interface CCUICAPackageView : UIView
 @property CCUICAPackageDescription* packageDescription;
--(void)setPackageDescription:(CCUICAPackageDescription*)arg1;
 -(void)setStateName:(NSString*)arg1;
 @end
 
