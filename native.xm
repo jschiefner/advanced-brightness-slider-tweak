@@ -4,7 +4,7 @@
 float oldNativeSliderLevel; // keep track of where slider was before panning to calculate panning offset
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
 ABSManager* nativeManager; // reference the shared manager object for the Native Group
-BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness transaction (avoid being changed after respring)
+BKSDisplayBrightnessTransactionRef _nativeBrightnessTransaction; // save brightness transaction (avoid being changed after respring)
 
 %group Native
 
@@ -22,7 +22,7 @@ BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness tr
 	if (!self.isBrightnessSlider) return %orig;
 
 	if ([recognizer state] == UIGestureRecognizerStateBegan) {
-		_brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
+		_nativeBrightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
 		oldNativeSliderLevel = nativeManager.currentSliderLevel;
 	}
 
@@ -33,7 +33,7 @@ BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness tr
 	}
 
 	if ([recognizer state] == UIGestureRecognizerStateEnded)
-		CFRelease(_brightnessTransaction);
+		CFRelease(_nativeBrightnessTransaction);
 }
 
 -(void)setValue:(float)arg1 {
@@ -64,7 +64,7 @@ BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness tr
 	[nativeManager setNativeIOS12SliderView:self];
 
 	if ([recognizer state] == UIGestureRecognizerStateBegan) {
-		_brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
+		_nativeBrightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
 		oldNativeSliderLevel = nativeManager.currentSliderLevel;
 	}
 
@@ -75,7 +75,7 @@ BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness tr
 	}
 
 	if ([recognizer state] == UIGestureRecognizerStateEnded)
-		CFRelease(_brightnessTransaction);
+		CFRelease(_nativeBrightnessTransaction);
 }
 
 -(void)setValue:(float)arg1 {
