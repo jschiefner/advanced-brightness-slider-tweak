@@ -20,14 +20,19 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
 	if (!self.isBrightnessSlider) return %orig;
 
-	if ([recognizer state] == UIGestureRecognizerStateBegan)
+	if ([recognizer state] == UIGestureRecognizerStateBegan) {
+		_brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
 		oldNativeSliderLevel = nativeManager.currentSliderLevel;
+	}
 
 	BOOL inBrightnessSection = [nativeManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldNativeSliderLevel withView:self withYDirection:YES];
 	if (!inBrightnessSection || nativeManager.iosVersion < 14) {
 		[self setGlyphState:nil]; // argument is ignored
 		if (brightnessTopGlyphPackageView != nil) [brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
 	}
+
+	if ([recognizer state] == UIGestureRecognizerStateEnded)
+		CFRelease(_brightnessTransaction);
 }
 
 -(void)setValue:(float)arg1 {
@@ -57,14 +62,19 @@ ABSManager* nativeManager; // reference the shared manager object for the Native
 
 	[nativeManager setNativeIOS12SliderView:self];
 
-	if ([recognizer state] == UIGestureRecognizerStateBegan)
+	if ([recognizer state] == UIGestureRecognizerStateBegan) {
+		_brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
 		oldNativeSliderLevel = nativeManager.currentSliderLevel;
+	}
 
 	BOOL inBrightnessSection = [nativeManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldNativeSliderLevel withView:self withYDirection:YES];
 	if (!inBrightnessSection || nativeManager.iosVersion < 14) {
 		[self setGlyphState:nil]; // argument is ignored
 		if (brightnessTopGlyphPackageView != nil) [brightnessTopGlyphPackageView setStateName:nil]; // argument is ignored
 	}
+
+	if ([recognizer state] == UIGestureRecognizerStateEnded)
+		CFRelease(_brightnessTransaction);
 }
 
 -(void)setValue:(float)arg1 {
