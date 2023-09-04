@@ -70,10 +70,8 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
 
 -(void)setBrightness:(float)amount {
   // credits: https://github.com/davidmurray/ios-reversed-headers/blob/master/BackBoardServices/BackBoardServices.h
-  // this method makes the brightness transition smoother and won't be overwritten after respring
-  _brightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
+  // if we create a brightness transaction here, it will be called too many times causing lag
   BKSDisplayBrightnessSet(amount, 1);
-  CFRelease(_brightnessTransaction);
 }
 
 -(float)brightness {
