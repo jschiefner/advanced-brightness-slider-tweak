@@ -4,6 +4,7 @@
 float oldNativeSliderLevel; // keep track of where slider was before panning to calculate panning offset
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
 ABSManager* nativeManager; // reference the shared manager object for the Native Group
+BKSDisplayBrightnessTransactionRef _brightnessTransaction; // save brightness transaction (avoid being changed after respring)
 
 %group Native
 
