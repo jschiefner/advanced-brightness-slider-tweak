@@ -21,7 +21,6 @@ NSArray<NSString*> *glyphStates = @[@"min", @"mid", @"full", @"max"];
   CCUIModuleSliderView* _nativeIOS12SliderView;
   SCDisplaySliderModuleViewController* _bigSurSliderController;
   Boolean _autoBrightnessShouldBeEnabled;
-  BKSDisplayBrightnessTransactionRef _brightnessTransaction;
 }
 
 +(ABSManager*)shared {
