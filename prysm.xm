@@ -1,11 +1,13 @@
 #import "shared.h"
 #import "ABSManager.h"
+#import "ReduceWhitePointLevel.h"
 
 float oldPrysmSliderLevel; // keep track of where slider was before panning to calculate panning offset
 float previousPrysmSliderLevel; // store slider level in the previous call to calculate when haptic feedback should be performed
 BOOL sliderHaptic; // store whether the sliders should perform haptic feedback
 UIImpactFeedbackGenerator* feedbackGenerator; // store a feedback generator when necessary
 ABSManager* prysmManager; // reference the shared manager object for the Prysm Group
+BKSDisplayBrightnessTransactionRef _prysmBrightnessTransaction; // save brightness transaction (avoid being changed after respring)
 
 %group Prysm
 %hook PrysmSliderViewController
@@ -18,8 +20,10 @@ ABSManager* prysmManager; // reference the shared manager object for the Prysm G
 -(void)move:(UIPanGestureRecognizer*)recognizer {
 	if (![self isBrightnessSlider]) return %orig;
 
-	if ([recognizer state] == UIGestureRecognizerStateBegan)
+	if ([recognizer state] == UIGestureRecognizerStateBegan) {
+		_prysmBrightnessTransaction = BKSDisplayBrightnessTransactionCreate(kCFAllocatorDefault);
 		oldPrysmSliderLevel = prysmManager.currentSliderLevel;
+	}
 
 	[prysmManager moveWithGestureRecognizer:recognizer withOldSliderLevel:oldPrysmSliderLevel withView:self.view withYDirection:NO]; // ignore return value
 	[self setProgressValue:-prysmManager.currentSliderLevel animated:NO];
@@ -27,6 +31,9 @@ ABSManager* prysmManager; // reference the shared manager object for the Prysm G
 	if (sliderHaptic && previousPrysmSliderLevel != prysmManager.currentSliderLevel && (prysmManager.currentSliderLevel == 0 || prysmManager.currentSliderLevel == 1))
 		[feedbackGenerator impactOccurred];
 	previousPrysmSliderLevel = prysmManager.currentSliderLevel;
+
+	if ([recognizer state] == UIGestureRecognizerStateEnded)
+		CFRelease(_prysmBrightnessTransaction);
 }
 
 -(void)setProgressValue:(double)arg1 animated:(BOOL)arg2 {
