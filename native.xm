@@ -58,7 +58,7 @@ BKSDisplayBrightnessTransactionRef _nativeBrightnessTransaction; // save brightn
 %hook CCUIModuleSliderView
 
 -(void)_handleValueChangeGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
-	if (nativeManager.iosVersion >= 13 || ![[[self allTargets] allObjects][0] isKindOfClass:%c(CCUIDisplayModuleViewController)])	
+	if (nativeManager.iosVersion >= 13 || ![[self nextResponder] isKindOfClass:%c(CCUIDisplayModuleViewController)])
 		return %orig;
 
 	[nativeManager setNativeIOS12SliderView:self];
@@ -79,7 +79,7 @@ BKSDisplayBrightnessTransactionRef _nativeBrightnessTransaction; // save brightn
 }
 
 -(void)setValue:(float)arg1 {
-	if (nativeManager.iosVersion >= 13 || ![[[self allTargets] allObjects][0] isKindOfClass:%c(CCUIDisplayModuleViewController)])
+	if (nativeManager.iosVersion >= 13 || ![[self nextResponder] isKindOfClass:%c(CCUIDisplayModuleViewController)])
 		return %orig;
 
 	if (arg1 >= 0) { // brightness, arg1 = system brightness 0..1
@@ -92,9 +92,9 @@ BKSDisplayBrightnessTransactionRef _nativeBrightnessTransaction; // save brightn
 }
 
 -(void)setGlyphState:(NSString*)arg1 {
-	if (nativeManager.iosVersion >= 13 || ![[[self allTargets] allObjects][0] isKindOfClass:%c(CCUIDisplayModuleViewController)])
+	if (nativeManager.iosVersion >= 13 || ![[self nextResponder] isKindOfClass:%c(CCUIDisplayModuleViewController)])
 		return %orig;
-		
+
 	%orig(nativeManager.glyphState); 
 }
 
