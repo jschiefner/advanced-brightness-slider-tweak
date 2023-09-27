@@ -1,5 +1,6 @@
 #import "shared.h"
 #import "ABSManager.h"
+#import "ReduceWhitePointLevel.h"
 
 float oldNativeSliderLevel; // keep track of where slider was before panning to calculate panning offset
 CCUICAPackageView* brightnessTopGlyphPackageView; // stores a reference to the top glyph so it can be updated
